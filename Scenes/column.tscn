@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://dhm7l5rtcxps2"]
+
+[ext_resource type="Script" path="res://Scripts/column.gd" id="1_d1h2m"]
+
+[node name="Column" type="Node2D"]
+position = Vector2(13.36, 6.36)
+script = ExtResource("1_d1h2m")
