@@ -6,4 +6,3 @@
 
 [node name="Board" parent="." instance=ExtResource("1_aiq4n")]
 position = Vector2(0, 100)
-column_count = 5

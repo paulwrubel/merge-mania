@@ -25,12 +25,10 @@ func _process(_delta):
 func _input_event(viewport: Viewport, event: InputEvent, shape_index: int):
 	if event is InputEventMouseButton:
 		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			# spawn a block
-			var block = BLOCK_SCENE.instantiate()
-			block.location = Vector2(index, 0)
-			block.size = Vector2(size.x, size.x)
-			block.board = board
-			add_child(block)
+			var row_index = board.get_next_open_index_in_column(index)
+			if row_index != -1:
+				# spawn a block
+				board.spawn_initial_block_at(Vector2(index, row_index), 1)
 			
 func _draw():
 	var style_box = StyleBoxFlat.new()
