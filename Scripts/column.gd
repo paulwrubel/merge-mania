@@ -1,25 +1,41 @@
 class_name Column
-extends Node2D
+extends Area2D
 
+const BLOCK_SCENE := preload("res://Scenes/block.tscn")
+var board: Board
+
+var index: int
 var size := Vector2(100, 200)
-var background_color = Color.DIM_GRAY
+var background_color := Color.DIM_GRAY
+var toggled_color := Color.RED
+var is_toggled := false
 
 const ROUNDED_CORNER_SIZE = 10
 const LOCAL_POSITION = Vector2(0, 0)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass # Replace with function body.
+	$CollisionShape2D.shape.size = size
+	$CollisionShape2D.position = size / 2
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	queue_redraw()
-	pass
-
+	
+func _input_event(viewport: Viewport, event: InputEvent, shape_index: int):
+	if event is InputEventMouseButton:
+		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+			# spawn a block
+			var block = BLOCK_SCENE.instantiate()
+			block.location = Vector2(index, 0)
+			block.size = Vector2(size.x, size.x)
+			block.board = board
+			add_child(block)
+			
 func _draw():
 	var style_box = StyleBoxFlat.new()
 	style_box.set_corner_radius_all(ROUNDED_CORNER_SIZE)
-	style_box.bg_color = background_color
+	style_box.bg_color = toggled_color if is_toggled else background_color
 	
 	draw_style_box(style_box, Rect2(LOCAL_POSITION, size))
 	
