@@ -2,6 +2,7 @@ class_name Column
 extends Area2D
 
 const BLOCK_SCENE := preload("res://Scenes/block.tscn")
+
 var board: Board
 
 var index: int
@@ -25,10 +26,7 @@ func _process(_delta):
 func _input_event(viewport: Viewport, event: InputEvent, shape_index: int):
 	if event is InputEventMouseButton:
 		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			var row_index = board.get_next_open_index_in_column(index)
-			if row_index != -1:
-				# spawn a block
-				board.spawn_initial_block_at(Vector2(index, row_index), 1)
+			board.try_spawn_initial_block_in(index)
 			
 func _draw():
 	var style_box = StyleBoxFlat.new()

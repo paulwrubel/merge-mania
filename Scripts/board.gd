@@ -10,34 +10,27 @@ var viewport_height: float = ProjectSettings.get_setting("display/window/size/vi
 const column_count: int = 5
 const row_count: int = 6
 
-const pre_block_size = 100
-const pre_padding = 5
-const pre_rounding_radius = 5
-const pre_width = (pre_block_size * column_count) + (pre_padding * (column_count + 1))
-const pre_height = (pre_block_size * row_count) + (pre_padding * (row_count + 1))
+const pre_block_size := 100
+const pre_padding := 5
+const pre_rounding_radius := 5
+const pre_width := (pre_block_size * column_count) + (pre_padding * (column_count + 1))
+const pre_height := (pre_block_size * row_count) + (pre_padding * (row_count + 1))
 
-var scalar = viewport_width / pre_width
+var scalar := viewport_width / pre_width
 
-var block_size = pre_block_size * scalar
-var padding = pre_padding * scalar
-var width = pre_width * scalar
-var height = pre_height * scalar
+var block_size := pre_block_size * scalar
+var padding := pre_padding * scalar
+var width := pre_width * scalar
+var height := pre_height * scalar
 
-#position.y = viewport_height - (block_size * row_count) - (padding * 2)
-#var column_height: float = viewport_height - position.y - (padding * 2)
-#
-#var block_size: float = (viewport_width - (padding * (column_count + 1))) / column_count
+const steps_above_minimum_to_advance := 9
+const steps_above_minimum_to_drop := 4
+
+var anim_lock := false
+var current_level := 0
+var block_progression: Array[int] = [0, 0]
 
 var blocks: Array[Array] = []
-
-func get_actual_location_from_grid(grid_loc: Vector2) -> Vector2:
-	return Vector2(
-		padding + padding * grid_loc.x + block_size * grid_loc.x, 
-		height - (padding * (grid_loc.y + 1) + block_size * (grid_loc.y + 1))
-	)
-
-func get_next_open_index_in_column(x: int) -> int:
-	return blocks[x].find(null)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -67,14 +60,52 @@ func _ready():
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
 	pass
+
+func get_actual_location_from_grid(grid_loc: Vector2) -> Vector2:
+	return Vector2(
+		padding + (padding * grid_loc.x) + (block_size * grid_loc.x), 
+		height - ((padding * (grid_loc.y + 1)) + (block_size * (grid_loc.y + 1)))
+	)
+
+func get_next_open_index_in_column(x: int) -> int:
+	return blocks[x].find(null)
 	
-func spawn_initial_block_at(position: Vector2, val: int):
+func spawn_initial_block_at(position: Vector2i, val: int):
 	var block = BLOCK_SCENE.instantiate()
-	block.grid_position_initial = Vector2(position.x, row_count - 1)
-	block.grid_position_final = position
-	block.size = Vector2(block_size, block_size)
-	block.board = self
+	block.initialize({
+		"grid_position_initial": Vector2i(position.x, row_count - 1),
+		"grid_position_final": position,
+		"size": Vector2(block_size, block_size),
+		"board": self,
+		"value": val,
+	})
 	add_child(block)
+	
+func try_spawn_initial_block_in(index: int):
+	var row_index = get_next_open_index_in_column(index)
+	if !anim_lock && row_index != -1:
+		# spawn a block
+		spawn_initial_block_at(Vector2(index, row_index), block_progression[0])
+		anim_lock = true
 	
 func add_block_at(loc: Vector2, val: int):
 	blocks[loc.x][loc.y] = val
+	
+func advance_block_progression():
+	block_progression.remove_at(0)
+	block_progression.push_back(select_next_block_in_progression())
+	
+func select_next_block_in_progression():
+#	if (Math.random() < specialBlockOdds) {
+#		const magSample = Math.random();
+#		const magnitude = magSample < 0.6 ? 0 : magSample < 0.9 ? 1 : 2;
+#		return {
+#			type: "wildcard",
+#			magnitude: magnitude,
+#			directions: randomCherryPickFromArray(
+#				["north", "south", "east", "west"],
+#				randRangeInt(1, 4),
+#			),
+#		};
+#	}
+	return current_level + randi_range(0, steps_above_minimum_to_drop)
