@@ -1,22 +1,12 @@
-[gd_scene load_steps=5 format=3 uid="uid://ckgpk1anbcwl1"]
+[gd_scene load_steps=2 format=3 uid="uid://5hrlqbbwmwek"]
 
-[ext_resource type="Script" path="res://Scripts/block.gd" id="1_vm013"]
-[ext_resource type="FontFile" uid="uid://bh6wkhea6qlt5" path="res://Resources/Fonts/static/SourceCodePro-Regular.ttf" id="2_ed2my"]
-
-[sub_resource type="Theme" id="Theme_kxd0y"]
-
-[sub_resource type="LabelSettings" id="LabelSettings_0r8dh"]
-font = ExtResource("2_ed2my")
-font_size = 32
-font_color = Color(0, 0, 0, 1)
+[ext_resource type="Script" path="res://Scripts/block.gd" id="1_diglc"]
 
 [node name="Block" type="Node2D"]
-script = ExtResource("1_vm013")
+script = ExtResource("1_diglc")
 
 [node name="BlockLabel" type="Label" parent="."]
 offset_right = 40.0
-offset_bottom = 40.0
-theme = SubResource("Theme_kxd0y")
-label_settings = SubResource("LabelSettings_0r8dh")
+offset_bottom = 23.0
 horizontal_alignment = 1
 vertical_alignment = 1

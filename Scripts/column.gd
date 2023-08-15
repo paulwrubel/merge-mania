@@ -1,8 +1,6 @@
 class_name Column
 extends Area2D
 
-const BLOCK_SCENE := preload("res://Scenes/block.tscn")
-
 var board: Board
 
 var index: int
@@ -23,7 +21,7 @@ func _ready():
 func _process(_delta):
 	queue_redraw()
 	
-func _input_event(viewport: Viewport, event: InputEvent, shape_index: int):
+func _input_event(_viewport: Viewport, event: InputEvent, _shape_index: int):
 	if event is InputEventMouseButton:
 		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 			board.try_spawn_initial_block_in(index)
