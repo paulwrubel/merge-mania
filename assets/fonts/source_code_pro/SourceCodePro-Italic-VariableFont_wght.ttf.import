@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://d21y3no44coak"
-path="res://.godot/imported/SourceCodePro-BlackItalic.ttf-be165bb9d9efbd56c87cbd38086163a8.fontdata"
+uid="uid://c046pbdksay0n"
+path="res://.godot/imported/SourceCodePro-Italic-VariableFont_wght.ttf-45db4d3a1fa00e3ca941a64792a49eb1.fontdata"
 
 [deps]
 
-source_file="res://Resources/Fonts/static/SourceCodePro-BlackItalic.ttf"
-dest_files=["res://.godot/imported/SourceCodePro-BlackItalic.ttf-be165bb9d9efbd56c87cbd38086163a8.fontdata"]
+source_file="res://assets/fonts/source_code_pro/SourceCodePro-Italic-VariableFont_wght.ttf"
+dest_files=["res://.godot/imported/SourceCodePro-Italic-VariableFont_wght.ttf-45db4d3a1fa00e3ca941a64792a49eb1.fontdata"]
 
 [params]
 

@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://daaniwx7jpyoy"
-path="res://.godot/imported/SourceCodePro-LightItalic.ttf-f164863fad2df08be3507688177c01b7.fontdata"
+uid="uid://cbuoyn5c8mbhm"
+path="res://.godot/imported/SourceCodePro-Italic.ttf-7e3c705e0c9c11f6870d4d8b16909631.fontdata"
 
 [deps]
 
-source_file="res://Resources/Fonts/static/SourceCodePro-LightItalic.ttf"
-dest_files=["res://.godot/imported/SourceCodePro-LightItalic.ttf-f164863fad2df08be3507688177c01b7.fontdata"]
+source_file="res://assets/fonts/source_code_pro/static/SourceCodePro-Italic.ttf"
+dest_files=["res://.godot/imported/SourceCodePro-Italic.ttf-7e3c705e0c9c11f6870d4d8b16909631.fontdata"]
 
 [params]
 

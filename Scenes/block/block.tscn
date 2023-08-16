@@ -1,9 +1,9 @@
 [gd_scene load_steps=2 format=3 uid="uid://5hrlqbbwmwek"]
 
-[ext_resource type="Script" path="res://Scripts/block.gd" id="1_diglc"]
+[ext_resource type="Script" path="res://scenes/block/block.gd" id="1_q2se7"]
 
 [node name="Block" type="Node2D"]
-script = ExtResource("1_diglc")
+script = ExtResource("1_q2se7")
 
 [node name="BlockLabel" type="Label" parent="."]
 offset_right = 40.0

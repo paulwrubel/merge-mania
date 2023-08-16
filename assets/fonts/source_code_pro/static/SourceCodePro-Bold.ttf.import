@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://dsob3x144kgo8"
-path="res://.godot/imported/SourceCodePro-ExtraBoldItalic.ttf-2acdaba662265efc5177b39fdce7036a.fontdata"
+uid="uid://cbepkkcdyuq6m"
+path="res://.godot/imported/SourceCodePro-Bold.ttf-459a37c988bcd414d98d12446f7f1861.fontdata"
 
 [deps]
 
-source_file="res://Resources/Fonts/static/SourceCodePro-ExtraBoldItalic.ttf"
-dest_files=["res://.godot/imported/SourceCodePro-ExtraBoldItalic.ttf-2acdaba662265efc5177b39fdce7036a.fontdata"]
+source_file="res://assets/fonts/source_code_pro/static/SourceCodePro-Bold.ttf"
+dest_files=["res://.godot/imported/SourceCodePro-Bold.ttf-459a37c988bcd414d98d12446f7f1861.fontdata"]
 
 [params]
 

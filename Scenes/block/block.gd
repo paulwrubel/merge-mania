@@ -1,7 +1,7 @@
 class_name Block
 extends Node2D
 
-var font = preload("res://Resources/Fonts/static/SourceCodePro-Regular.ttf")
+var font = preload("res://assets/fonts/source_code_pro/static/SourceCodePro-Regular.ttf")
 
 var board: Board
 
@@ -47,8 +47,6 @@ func _ready():
 	var text = board.get_formatted_block_text(data)
 	var text_size = font.get_string_size(text, HORIZONTAL_ALIGNMENT_CENTER, -1, DEFAULT_FONT_SIZE)
 	var font_size_scalar = (size.x / text_size.x) * 0.95
-	
-	print(font_size_scalar)
 	
 	var font_color = ColorUtils.get_highest_contrast_to(color, [Color.BLACK, Color.WHITE])
 	var label_settings = LabelSettings.new()

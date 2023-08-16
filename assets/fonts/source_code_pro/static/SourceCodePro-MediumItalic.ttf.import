@@ -3,12 +3,12 @@
 importer="font_data_dynamic"
 type="FontFile"
 uid="uid://hr5k0msoajas"
-path="res://.godot/imported/SourceCodePro-MediumItalic.ttf-f2e51e1b0cfc0c43b621f00e781495b9.fontdata"
+path="res://.godot/imported/SourceCodePro-MediumItalic.ttf-830b55d8105d655044bc8a7f251f34b2.fontdata"
 
 [deps]
 
-source_file="res://Resources/Fonts/static/SourceCodePro-MediumItalic.ttf"
-dest_files=["res://.godot/imported/SourceCodePro-MediumItalic.ttf-f2e51e1b0cfc0c43b621f00e781495b9.fontdata"]
+source_file="res://assets/fonts/source_code_pro/static/SourceCodePro-MediumItalic.ttf"
+dest_files=["res://.godot/imported/SourceCodePro-MediumItalic.ttf-830b55d8105d655044bc8a7f251f34b2.fontdata"]
 
 [params]
 

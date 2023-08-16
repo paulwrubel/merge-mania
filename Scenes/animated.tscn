@@ -1,6 +1,35 @@
-[gd_scene load_steps=2 format=3 uid="uid://c4av1tdxh67s8"]
+[gd_scene load_steps=2 format=3 uid="uid://dw172ag6i3kng"]
 
-[ext_resource type="Script" path="res://Scripts/animated.gd" id="1_s4bkt"]
+[sub_resource type="GDScript" id="GDScript_jm5cy"]
+script/source = "class_name Animated
+extends Node2D
+
+var parent_property_name: String
+var parent_property_value: Variant
+var duration_seconds: float
+var ease: Tween.EaseType
+var trans: Tween.TransitionType
+var on_finished: Callable
+
+var is_animating := false
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	is_animating = true
+	var block = get_parent()
+	var tween = create_tween()
+	tween.tween_property(block, parent_property_name, parent_property_value, duration_seconds) \\
+		.set_ease(ease) \\
+		.set_trans(trans)
+	var callback = func():
+		on_finished.call(block)
+		is_animating = false
+	tween.tween_callback(callback)
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+func _process(delta):
+	pass
+"
 
 [node name="Animated" type="Node2D"]
-script = ExtResource("1_s4bkt")
+script = SubResource("GDScript_jm5cy")

@@ -2,13 +2,13 @@
 
 importer="font_data_dynamic"
 type="FontFile"
-uid="uid://cc1cufjeg6811"
-path="res://.godot/imported/SourceCodePro-ExtraBold.ttf-8aaea4f89f29ab55554374bf71329777.fontdata"
+uid="uid://cgxnwg56fchff"
+path="res://.godot/imported/SourceCodePro-SemiBold.ttf-7730996ab6a95d65af017018c5f97ce6.fontdata"
 
 [deps]
 
-source_file="res://Resources/Fonts/static/SourceCodePro-ExtraBold.ttf"
-dest_files=["res://.godot/imported/SourceCodePro-ExtraBold.ttf-8aaea4f89f29ab55554374bf71329777.fontdata"]
+source_file="res://assets/fonts/source_code_pro/static/SourceCodePro-SemiBold.ttf"
+dest_files=["res://.godot/imported/SourceCodePro-SemiBold.ttf-7730996ab6a95d65af017018c5f97ce6.fontdata"]
 
 [params]
 

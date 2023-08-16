@@ -1,8 +1,10 @@
 class_name Board
 extends Node2D
 
-const COLUMN_SCENE := preload("res://Scenes/column.tscn")
-const BLOCK_SCENE := preload("res://Scenes/block.tscn")
+signal current_level_changed(new_current_level)
+
+const COLUMN_SCENE := preload("res://scenes/column/column.tscn")
+const BLOCK_SCENE := preload("res://scenes/block/block.tscn")
 
 const NEW_BLOCK_ANIMATION_DURATION_SECONDS = 0.2
 const MERGE_ANIMATION_DURATION_SECONDS = 0.3
@@ -46,7 +48,7 @@ var color_progression: Array[Color] = [
 	Color.html("#B118C8"),
 ]
 
-const steps_above_minimum_to_advance := 9
+const steps_above_minimum_to_advance := 5
 const steps_above_minimum_to_drop := 4
 
 var anim_lock := false
@@ -61,6 +63,9 @@ var blocks: Array[Array] = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
+	current_level = 1
+	current_level_changed.emit(1)
+	
 	# initialize blocks grid
 	for x in range(column_count):
 		var col = []
@@ -735,6 +740,10 @@ func try_check_remove_invalid_blocks(on_animation_chain_finished: Callable):
 		# we'll just set it to whichever we saw last, because why not
 		active_column = pos.x
 		# this is the removal animation
+		var block_label = block.get_node("BlockLabel")
+		print(block_label)
+		print(block_label.size)
+		print(block_label.scale)
 		subjects.append_array([
 			AnimationSubject.new(
 				block,
@@ -744,6 +753,11 @@ func try_check_remove_invalid_blocks(on_animation_chain_finished: Callable):
 			AnimationSubject.new(
 				block,
 				"size",
+				Vector2(0, 0)
+			),
+			AnimationSubject.new(
+				block_label,
+				"scale",
 				Vector2(0, 0)
 			),
 		])
@@ -770,6 +784,7 @@ func try_check_new_level():
 	)
 	if new_current_level > current_level:
 		current_level = new_current_level
+		current_level_changed.emit(new_current_level)
 		
 		# reset power progression
 		var filter_func = func(block_data: BlockData):
@@ -788,7 +803,6 @@ func try_check_new_level():
 
 func get_on_animation_chain_finished():
 	return func():
-		print(blocks)
 		try_check_new_level()
 		try_check_remove_invalid_blocks(get_on_animation_chain_finished())
 # 		TODO: save
