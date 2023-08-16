@@ -63,8 +63,6 @@ var blocks: Array[Array] = []
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	current_level = 1
-	current_level_changed.emit(1)
 	
 	# initialize blocks grid
 	for x in range(column_count):
@@ -80,7 +78,6 @@ func _ready():
 		column.index = i
 		column.position = Vector2(column_x, padding)
 		column.size = Vector2(block_size, height - padding * 2)
-		column.background_color = Color.DIM_GRAY
 		column.board = self
 		
 		add_child(column)
