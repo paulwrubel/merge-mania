@@ -1,8 +1,12 @@
 class_name WildcardBlockData
 extends BlockData
 
-var magnitude: int
+enum CardinalDirection { NORTH, SOUTH, EAST, WEST }
 
-func _init(_magnitude: int):
+var magnitude: int
+var directions: Array[CardinalDirection]
+
+func _init(_magnitude: int, _directions: Array[CardinalDirection]):
 	super(BlockData.Type.WILDCARD)
 	self.magnitude = _magnitude
+	self.directions = _directions.duplicate()

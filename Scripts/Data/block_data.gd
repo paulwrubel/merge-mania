@@ -1,7 +1,7 @@
 class_name BlockData
 extends RefCounted
 
-enum Type {POWER, WILDCARD}
+enum Type { POWER, WILDCARD }
 
 var type: Type
 
