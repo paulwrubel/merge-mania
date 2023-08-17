@@ -1,14 +1,47 @@
-[gd_scene load_steps=3 format=3 uid="uid://g2su4qt6c7vn"]
+[gd_scene load_steps=8 format=3 uid="uid://g2su4qt6c7vn"]
 
 [ext_resource type="PackedScene" uid="uid://cwmiqqpjkkbe" path="res://scenes/board/board.tscn" id="1_w173f"]
 [ext_resource type="Script" path="res://scenes/main/level_label.gd" id="2_pmoxd"]
+[ext_resource type="FontFile" uid="uid://bh6wkhea6qlt5" path="res://assets/fonts/source_code_pro/static/SourceCodePro-Regular.ttf" id="2_yhj8y"]
+[ext_resource type="Script" path="res://scenes/main/block_progression_display.gd" id="3_bdpll"]
+[ext_resource type="Script" path="res://scenes/main/goal_block_display.gd" id="5_lvg34"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_w0o4o"]
+line_spacing = 0.0
+font = ExtResource("2_yhj8y")
+font_size = 32
+
+[sub_resource type="LabelSettings" id="LabelSettings_4ncvs"]
+line_spacing = 0.0
+font = ExtResource("2_yhj8y")
+font_size = 22
 
 [node name="Main" type="Node2D"]
 
 [node name="Board" parent="." instance=ExtResource("1_w173f")]
 position = Vector2(0, 100)
 
-[node name="LevelLabel" type="Label" parent="."]
-offset_right = 40.0
-offset_bottom = 23.0
+[node name="BlockProgressionDisplay" type="Node2D" parent="."]
+position = Vector2(300, 0)
+script = ExtResource("3_bdpll")
+
+[node name="GoalBlockVBoxContainer" type="VBoxContainer" parent="."]
+offset_right = 78.0
+offset_bottom = 40.0
+
+[node name="LevelLabel" type="Label" parent="GoalBlockVBoxContainer" node_paths=PackedStringArray("board")]
+layout_mode = 2
+label_settings = SubResource("LabelSettings_w0o4o")
 script = ExtResource("2_pmoxd")
+board = NodePath("../../Board")
+
+[node name="GoalLabel" type="Label" parent="GoalBlockVBoxContainer"]
+layout_mode = 2
+text = "Goal::"
+label_settings = SubResource("LabelSettings_4ncvs")
+horizontal_alignment = 1
+
+[node name="GoalBlockDisplay" type="Container" parent="GoalBlockVBoxContainer" node_paths=PackedStringArray("board")]
+layout_mode = 2
+script = ExtResource("5_lvg34")
+board = NodePath("../../Board")

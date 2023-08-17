@@ -1,9 +1,10 @@
 class_name LevelLabel
 extends Label
 
+@export var board: Board
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	var board: Board = $"../Board"
 	update_text_from_level(board.current_level)
 	board.current_level_changed.connect(_on_current_level_changed)
 

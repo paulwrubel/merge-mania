@@ -2,6 +2,8 @@ class_name Board
 extends Node2D
 
 signal current_level_changed(new_current_level)
+signal block_progression_advanced(new_block_progression)
+signal block_progression_refreshed(new_block_progression)
 
 const COLUMN_SCENE := preload("res://scenes/column/column.tscn")
 const BLOCK_SCENE := preload("res://scenes/block/block.tscn")
@@ -56,7 +58,6 @@ var current_level := 0
 var block_progression: Array[BlockData] = [
 	PowerBlockData.new(0), 
 	PowerBlockData.new(0),
-	PowerBlockData.new(1),
 ]
 
 var blocks: Array[Array] = []
@@ -171,10 +172,11 @@ func spawn_initial_block_at(pos: Vector2i, data: BlockData):
 func get_new_block(pos: Vector2i, data: BlockData) -> Block:
 	var block = BLOCK_SCENE.instantiate()
 	block.initialize({
-		"grid_position": pos,
+		"position": get_actual_location_from_grid(pos),
 #		"grid_position_initial": from_pos,
 #		"grid_position_final": to_pos,
 		"size": Vector2(block_size, block_size),
+		"scale": Vector2(1, 1),
 		"board": self,
 		"color": get_block_background_color(data),
 		"data": data,
@@ -218,6 +220,7 @@ func select_next_block_in_progression():
 func advance_block_progression():
 	block_progression.remove_at(0)
 	block_progression.push_back(select_next_block_in_progression())
+	block_progression_advanced.emit(block_progression)
 	
 func get_max_power_active() -> int:
 	var max_power = 0
@@ -233,15 +236,14 @@ func get_actual_location_from_grid(grid_loc: Vector2) -> Vector2:
 		height - ((padding * (grid_loc.y + 1)) + (block_size * (grid_loc.y + 1)))
 	)
 	
-func animate_blocks(subjects: Array[AnimationSubject], duration_seconds: float, on_finish: Callable):
+func animate_blocks(subjects: Array[AnimationSubject], duration_seconds: float, on_finish = null):
 	var tween = create_tween() \
 		.set_ease(Tween.EASE_OUT) \
 		.set_trans(Tween.TRANS_EXPO)
 	for subject in subjects:
 		tween.parallel().tween_property(subject.subject, subject.property_name, subject.property_value, duration_seconds)
-	var callback = func():
-		on_finish.call()
-	tween.tween_callback(callback)
+	if on_finish != null:
+		tween.tween_callback(on_finish)
 	
 func try_check_collapse(active_column: int, on_animation_chain_finished: Callable):
 	var did_collapse = false
@@ -738,9 +740,6 @@ func try_check_remove_invalid_blocks(on_animation_chain_finished: Callable):
 		active_column = pos.x
 		# this is the removal animation
 		var block_label = block.get_node("BlockLabel")
-		print(block_label)
-		print(block_label.size)
-		print(block_label.scale)
 		subjects.append_array([
 			AnimationSubject.new(
 				block,
@@ -797,6 +796,7 @@ func try_check_new_level():
 		block_progression = []
 		block_progression.append_array(retained_blocks)
 		block_progression.append_array(new_blocks)
+		block_progression_refreshed.emit(block_progression)
 
 func get_on_animation_chain_finished():
 	return func():
