@@ -14,6 +14,7 @@ func _ready():
 		Vector2(0, 0), 
 		PowerBlockData.new(board.current_level + board.steps_above_minimum_to_advance),
 	)
+#	reset_size()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -25,13 +26,14 @@ func _on_current_level_changed(new_level: int):
 		Vector2(0, 0), 
 		PowerBlockData.new(board.current_level + board.steps_above_minimum_to_advance),
 	)
+#	reset_size()
 	
 func get_new_block(pos: Vector2, data: BlockData) -> Block:
 	var block = BLOCK_SCENE.instantiate()
 	block.initialize({
 		"position": pos,
 		"size": Vector2(board.block_size, board.block_size),
-		"scale": Vector2(1, 1) * 0.8,
+		"scale": Vector2(1, 1),
 		"board": board,
 		"color": board.get_block_background_color(data),
 		"data": data,

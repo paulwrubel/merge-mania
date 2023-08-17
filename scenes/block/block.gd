@@ -1,5 +1,5 @@
 class_name Block
-extends Control
+extends Panel
 
 var font = preload("res://assets/fonts/source_code_pro/static/SourceCodePro-Regular.ttf")
 
@@ -25,7 +25,7 @@ func initialize(settings: Dictionary):
 #	grid_position_initial = settings.grid_position_initial
 #	grid_position_final = settings.grid_position_final
 	custom_minimum_size = settings.size
-	size = settings.size
+#	size = settings.size
 	color = settings.color
 	data = settings.data
 	scale = settings.scale
@@ -45,9 +45,6 @@ func _ready():
 #		.set_ease(Tween.EASE_OUT) \
 #		.set_trans(Tween.TRANS_EXPO)
 #	tween.tween_callback(animation_callback)
-
-	var v = VBoxContainer.new()
-	v.update_minimum_size()
 	
 	var text = board.get_formatted_block_text(data)
 	var text_size = font.get_string_size(text, HORIZONTAL_ALIGNMENT_CENTER, -1, DEFAULT_FONT_SIZE)
@@ -62,13 +59,20 @@ func _ready():
 	$BlockLabel.size = size
 	$BlockLabel.text = text
 	
-# Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta):
-	queue_redraw()
-			
-func _draw():
+	
+	
 	var style_box = StyleBoxFlat.new()
 	style_box.set_corner_radius_all(ROUNDED_CORNER_SIZE)
 	style_box.bg_color = color
+	self.add_theme_stylebox_override("panel", style_box)
 	
-	draw_style_box(style_box, Rect2(Vector2(0, 0), size))
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(_delta):
+#	queue_redraw()
+#
+#func _draw():
+##	var style_box = StyleBoxFlat.new()
+#	panel.set_corner_radius_all(ROUNDED_CORNER_SIZE)
+#	panel.bg_color = color
+#
+#	draw_style_box(style_box, Rect2(Vector2(0, 0), size))

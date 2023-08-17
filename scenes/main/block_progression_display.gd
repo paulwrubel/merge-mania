@@ -1,8 +1,8 @@
-extends Node2D
+extends Control
 
 var BLOCK_SCENE = preload("res://scenes/block/block.tscn")
 
-var board: Board
+@export var board: Board
 
 var block_progression: Array[Block] = []
 
@@ -13,8 +13,6 @@ const SLIDE_BLOCKS_ANIMATION_DURATION_SECONDS = 0.3
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	board = $"../Board"
-	
 	board.block_progression_advanced.connect(_on_block_progression_advanced)
 	board.block_progression_refreshed.connect(_on_block_progression_refreshed)
 	var block_progression_data = board.block_progression.duplicate()
@@ -82,7 +80,7 @@ func get_new_block(index: int, data: BlockData) -> Block:
 		scale *= 0.8
 	block.initialize({
 		"position": get_actual_position_from_index(index),
-		"size": Vector2(board.block_size, board.block_size),
+		"size": Vector2(block_size, block_size),
 		"scale": scale,
 		"board": board,
 		"color": board.get_block_background_color(data),
@@ -101,6 +99,6 @@ func destroy_block(block: Block):
 	
 func get_actual_position_from_index(index: int) -> Vector2:
 	return Vector2(
-		(padding * (index + 1)) + (min(index, 1) * board.block_size) + (max(index - 1, 0) * board.block_size * 0.8),
+		(padding * (index + 1)) + (min(index, 1) * block_size) + (max(index - 1, 0) * block_size * 0.8),
 		padding
 	)

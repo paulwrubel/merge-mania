@@ -1,5 +1,5 @@
 class_name Board
-extends Node2D
+extends Control
 
 signal current_level_changed(new_current_level)
 signal block_progression_advanced(new_block_progression)
@@ -13,26 +13,34 @@ const MERGE_ANIMATION_DURATION_SECONDS = 0.3
 const COLLAPSE_ANIMATION_DURATION_SECONDS = 0.3
 const REMOVE_BLOCK_ANIMATION_DURATION_SECONDS = 0.5
 
-var viewport_width: float = ProjectSettings.get_setting("display/window/size/viewport_width")
-var viewport_height: float = ProjectSettings.get_setting("display/window/size/viewport_height")
+#var viewport_width: float = ProjectSettings.get_setting("display/window/size/viewport_width")
+#var viewport_height: float = ProjectSettings.get_setting("display/window/size/viewport_height")
 
 const column_count: int = 5
 const row_count: int = 6
 
 const pre_block_size := 100
 const pre_padding := 5
-const pre_rounding_radius := 5
-const pre_width := (pre_block_size * column_count) + (pre_padding * (column_count + 1))
-const pre_height := (pre_block_size * row_count) + (pre_padding * (row_count + 1))
+#const pre_rounding_radius := 5
+const pre_size := Vector2(
+	(pre_block_size * column_count) + (pre_padding * (column_count + 1)),
+	(pre_block_size * row_count) + (pre_padding * (row_count + 1)),
+)
+const aspect_ratio = pre_size.x / pre_size.y
 
 var block_symbols: PackedStringArray
 
-var scalar := viewport_width / pre_width
+#var scalar := viewport_width / pre_width
+#
+#var block_size := pre_block_size * scalar
+#var padding := pre_padding * scalar
+#var width := pre_width * scalar
+#var height := pre_height * scalar
 
-var block_size := pre_block_size * scalar
-var padding := pre_padding * scalar
-var width := pre_width * scalar
-var height := pre_height * scalar
+var block_size: float = pre_block_size
+var padding: float = pre_padding
+var width: float = pre_size.x
+var height: float = pre_size.y
 
 var color_progression: Array[Color] = [
 #	Color.html("#DDDDDD"),
@@ -62,8 +70,8 @@ var block_progression: Array[BlockData] = [
 
 var blocks: Array[Array] = []
 
-# Called when the node enters the scene tree for the first time.
-func _ready():
+func _init():
+	print("running _init")
 	
 	# initialize blocks grid
 	for x in range(column_count):
@@ -71,13 +79,21 @@ func _ready():
 		for y in range(row_count):
 			col.append(null)
 		blocks.append(col)
+		
+	block_symbols = build_block_symbols()
+
+# Called when the node enters the scene tree for the first time.
+func _ready():
+	print("running _ready")
+	
+	check_and_resize()
 	
 	# initialize columns
 	var column_x: float = padding
 	for i in range(column_count):
 		var column := COLUMN_SCENE.instantiate()
 		column.index = i
-		column.position = Vector2(column_x, padding)
+		column.position = Vector2(column_x, height - padding)
 		column.size = Vector2(block_size, height - padding * 2)
 		column.board = self
 		
@@ -85,15 +101,51 @@ func _ready():
 		
 		column_x += block_size + padding
 		
+	
+	
+	check_and_resize()
+		
 	# various other setup
-	position = Vector2(0, viewport_height - height)
-	block_symbols = build_block_symbols()
+#	position = Vector2(0, viewport_height - height)
+	
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	pass
 	
+func _on_resized():
+	check_and_resize()
+	
+func check_and_resize():
+	var scalar = size.x / pre_size.x
+	
+	width = size.x
+	height = width / aspect_ratio
+	
+	block_size = pre_block_size * scalar
+	padding = pre_padding * scalar
+	
+#	var scalar_x = size.x / pre_size.x
+#	var scalar_y = size.y / pre_size.y
+#
+#	var scalar: float
+#
+#	if scalar_x <= scalar_y:
+#		scalar = scalar_x
+#		width = size.x
+#		height = width / aspect_ratio
+#	else:
+#		scalar = scalar_y
+#		height = size.y
+#		width = height * aspect_ratio
+#
+#	block_size = pre_block_size * scalar
+#	padding = pre_padding * scalar
+	
+	custom_minimum_size = Vector2(width, height)
+	
 func build_block_symbols() -> PackedStringArray:
+	print("building block symbols")
 	var static_symbols = PackedStringArray([""]) + "kmgtpezyrq".split()
 	var dynamic_symbols_level_1 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split()
 	var dynamic_symbols_level_2: PackedStringArray = []
@@ -147,7 +199,9 @@ func destroy_block(block: Block):
 	block.queue_free()
 	
 func try_spawn_initial_block_in(x: int):
+	print("trying spawning block!")
 	if !anim_lock && blocks[x].any(func(block): return block == null):
+		print("spawning block!")
 		anim_lock = true
 		var y = get_next_open_index_in_column(x)
 		spawn_initial_block_at(Vector2i(x, y), block_progression[0])
@@ -234,7 +288,7 @@ func get_actual_location_from_grid(grid_loc: Vector2) -> Vector2:
 	return Vector2(
 		padding + (padding * grid_loc.x) + (block_size * grid_loc.x), 
 		height - ((padding * (grid_loc.y + 1)) + (block_size * (grid_loc.y + 1)))
-	)
+	) - Vector2(0, height)
 	
 func animate_blocks(subjects: Array[AnimationSubject], duration_seconds: float, on_finish = null):
 	var tween = create_tween() \
@@ -520,7 +574,7 @@ func try_check_merge(active_column: int, should_check_special: bool, on_animatio
 			sub_on_finish_funcs.append(func():
 				destroy_block(new_block)	
 			)
-			on_finish_funcs
+			
 			destroy_block(blocks[pos.x][pos.y])
 			blocks[pos.x][pos.y] = null
 		

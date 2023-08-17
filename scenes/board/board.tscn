@@ -2,5 +2,9 @@
 
 [ext_resource type="Script" path="res://scenes/board/board.gd" id="1_2uu06"]
 
-[node name="Board" type="Node2D"]
+[node name="Board" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 480.0
+offset_bottom = 720.0
 script = ExtResource("1_2uu06")

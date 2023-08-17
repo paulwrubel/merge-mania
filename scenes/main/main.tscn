@@ -9,39 +9,78 @@
 [sub_resource type="LabelSettings" id="LabelSettings_w0o4o"]
 line_spacing = 0.0
 font = ExtResource("2_yhj8y")
-font_size = 32
+font_size = 28
 
 [sub_resource type="LabelSettings" id="LabelSettings_4ncvs"]
 line_spacing = 0.0
 font = ExtResource("2_yhj8y")
-font_size = 22
+font_size = 20
 
 [node name="Main" type="Node2D"]
 
 [node name="Board" parent="." instance=ExtResource("1_w173f")]
-position = Vector2(0, 100)
+custom_minimum_size = Vector2(0, 10)
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -10.0
+offset_bottom = 0.0
+grow_vertical = 0
+mouse_filter = 1
 
-[node name="BlockProgressionDisplay" type="Node2D" parent="."]
-position = Vector2(300, 0)
-script = ExtResource("3_bdpll")
+[node name="BoxContainer" type="BoxContainer" parent="."]
+visible = false
+offset_right = 480.0
+offset_bottom = 720.0
 
-[node name="GoalBlockVBoxContainer" type="VBoxContainer" parent="."]
-offset_right = 78.0
-offset_bottom = 40.0
-
-[node name="LevelLabel" type="Label" parent="GoalBlockVBoxContainer" node_paths=PackedStringArray("board")]
+[node name="VBoxContainer" type="VBoxContainer" parent="BoxContainer"]
+custom_minimum_size = Vector2(10, 10)
 layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="BoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+size_flags_stretch_ratio = 2.8
+alignment = 1
+
+[node name="LevelLabel" type="Label" parent="BoxContainer/VBoxContainer/HBoxContainer" node_paths=PackedStringArray("board")]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 1
 label_settings = SubResource("LabelSettings_w0o4o")
 script = ExtResource("2_pmoxd")
-board = NodePath("../../Board")
+board = NodePath("../../../../Board")
 
-[node name="GoalLabel" type="Label" parent="GoalBlockVBoxContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="BoxContainer/VBoxContainer/HBoxContainer"]
 layout_mode = 2
-text = "Goal::"
+size_flags_horizontal = 3
+size_flags_vertical = 0
+
+[node name="GoalLabel" type="Label" parent="BoxContainer/VBoxContainer/HBoxContainer/VBoxContainer"]
+layout_mode = 2
+text = "Goal:"
 label_settings = SubResource("LabelSettings_4ncvs")
 horizontal_alignment = 1
 
-[node name="GoalBlockDisplay" type="Container" parent="GoalBlockVBoxContainer" node_paths=PackedStringArray("board")]
+[node name="GoalBlockDisplay" type="BoxContainer" parent="BoxContainer/VBoxContainer/HBoxContainer/VBoxContainer" node_paths=PackedStringArray("board")]
 layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+alignment = 1
 script = ExtResource("5_lvg34")
-board = NodePath("../../Board")
+board = NodePath("../../../../../Board")
+
+[node name="BoxContainer" type="BoxContainer" parent="BoxContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+alignment = 1
+vertical = true
+
+[node name="BlockProgressionDisplay" type="Control" parent="BoxContainer/VBoxContainer/HBoxContainer/BoxContainer" node_paths=PackedStringArray("board")]
+layout_mode = 2
+size_flags_horizontal = 3
+script = ExtResource("3_bdpll")
+board = NodePath("../../../../../Board")
+
+[connection signal="resized" from="Board" to="Board" method="_on_resized"]

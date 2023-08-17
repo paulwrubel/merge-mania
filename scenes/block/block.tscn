@@ -2,9 +2,7 @@
 
 [ext_resource type="Script" path="res://scenes/block/block.gd" id="1_ursd5"]
 
-[node name="Block" type="Control"]
-layout_mode = 3
-anchors_preset = 0
+[node name="Block" type="Panel"]
 script = ExtResource("1_ursd5")
 
 [node name="BlockLabel" type="Label" parent="."]
