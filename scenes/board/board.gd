@@ -50,7 +50,7 @@ var color_progression: Array[Color] = [
 	Color.html("#B118C8"),
 ]
 
-const steps_above_minimum_to_advance := 5
+const steps_above_minimum_to_advance := 9
 const steps_above_minimum_to_drop := 4
 
 var anim_lock := false
