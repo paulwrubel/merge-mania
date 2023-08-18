@@ -93,7 +93,7 @@ func _ready():
 	for i in range(column_count):
 		var column := COLUMN_SCENE.instantiate()
 		column.index = i
-		column.position = Vector2(column_x, height - padding)
+		column.position = Vector2(column_x, padding)
 		column.size = Vector2(block_size, height - padding * 2)
 		column.board = self
 		
