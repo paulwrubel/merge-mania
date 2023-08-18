@@ -1,4 +1,4 @@
-extends Control
+extends Node2D
 
 var BLOCK_SCENE = preload("res://scenes/block/block.tscn")
 
@@ -11,9 +11,11 @@ func _ready():
 	board.current_level_changed.connect(_on_current_level_changed)
 	
 	display_block = spawn_block(
-		Vector2(0, 0), 
+		Vector2(0, $GoalLabel.size.y), 
 		PowerBlockData.new(board.current_level + board.steps_above_minimum_to_advance),
 	)
+	
+	$GoalLabel.size = display_block.size * display_block.scale
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
@@ -22,7 +24,7 @@ func _process(delta):
 func _on_current_level_changed(new_level: int):
 	destroy_block(display_block)
 	display_block = spawn_block(
-		Vector2(0, 0), 
+		Vector2(0, $GoalLabel.size.y), 
 		PowerBlockData.new(board.current_level + board.steps_above_minimum_to_advance),
 	)
 	

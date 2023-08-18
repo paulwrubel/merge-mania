@@ -1,5 +1,5 @@
 class_name Block
-extends Control
+extends Node2D
 
 var font = preload("res://assets/fonts/source_code_pro/static/SourceCodePro-Regular.ttf")
 
@@ -8,7 +8,7 @@ var board: Board
 #var grid_position: Vector2i
 #var grid_position_initial: Vector2i
 #var grid_position_final: Vector2i
-#var size: Vector2
+var size: Vector2
 var color: Color
 var data: BlockData
 #var animation_callback: Callable
@@ -24,7 +24,7 @@ func initialize(settings: Dictionary):
 	position = settings.position
 #	grid_position_initial = settings.grid_position_initial
 #	grid_position_final = settings.grid_position_final
-	custom_minimum_size = settings.size
+#	custom_minimum_size = settings.size
 	size = settings.size
 	color = settings.color
 	data = settings.data
@@ -45,9 +45,6 @@ func _ready():
 #		.set_ease(Tween.EASE_OUT) \
 #		.set_trans(Tween.TRANS_EXPO)
 #	tween.tween_callback(animation_callback)
-
-	var v = VBoxContainer.new()
-	v.update_minimum_size()
 	
 	var text = board.get_formatted_block_text(data)
 	var text_size = font.get_string_size(text, HORIZONTAL_ALIGNMENT_CENTER, -1, DEFAULT_FONT_SIZE)

@@ -2,7 +2,7 @@ extends Node2D
 
 var BLOCK_SCENE = preload("res://scenes/block/block.tscn")
 
-var board: Board
+@export var board: Board
 
 var block_progression: Array[Block] = []
 
@@ -13,8 +13,6 @@ const SLIDE_BLOCKS_ANIMATION_DURATION_SECONDS = 0.3
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	board = $"../Board"
-	
 	board.block_progression_advanced.connect(_on_block_progression_advanced)
 	board.block_progression_refreshed.connect(_on_block_progression_refreshed)
 	var block_progression_data = board.block_progression.duplicate()
@@ -23,10 +21,16 @@ func _ready():
 	for i in range(block_progression_data.size()):
 		var data = block_progression_data[i]
 		block_progression.append(spawn_block(i, data))
+		
+	var window_width = get_window().content_scale_size.x
+	position = Vector2(
+		window_width - (padding * 3 + board.block_size * 1.8),
+		0
+	)
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
-	pass
+#func _process(delta):
+#	pass
 	
 func _on_block_progression_advanced(new_block_progression_data: Array[BlockData]):
 	# add the newly generated block to the end of our array
