@@ -15,7 +15,7 @@ func _ready():
 		PowerBlockData.new(board.current_level + board.steps_above_minimum_to_advance),
 	)
 	
-	$GoalLabel.size = display_block.size * display_block.scale
+	$GoalLabel.size.x = display_block.size.x * display_block.scale.x
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
