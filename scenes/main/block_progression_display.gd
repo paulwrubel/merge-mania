@@ -4,7 +4,7 @@ var BLOCK_SCENE = preload("res://scenes/block/block.tscn")
 
 @export var board: Board
 
-var block_progression: Array[Block] = []
+var block_progression: Array[Block]
 
 var block_size := 100
 var padding := 5
@@ -19,12 +19,8 @@ var slide_blocks_animation_tween_settings = TweenSettings.new(
 func _ready():
 	board.block_progression_advanced.connect(_on_block_progression_advanced)
 	board.block_progression_refreshed.connect(_on_block_progression_refreshed)
-	var block_progression_data = board.block_progression.duplicate()
-	print(block_progression_data)
 	
-	for i in range(block_progression_data.size()):
-		var data = block_progression_data[i]
-		block_progression.append(spawn_block(i, data))
+	build_initial_block_progression(board.block_progression.duplicate())
 		
 	var window_width = get_window().content_scale_size.x
 	position = Vector2(
@@ -33,8 +29,8 @@ func _ready():
 	)
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-#func _process(delta):
-#	pass
+func _process(delta):
+	pass
 	
 func _on_block_progression_advanced(new_block_progression_data: Array[BlockData]):
 	# add the newly generated block to the end of our array
@@ -59,16 +55,6 @@ func _on_block_progression_advanced(new_block_progression_data: Array[BlockData]
 					"scale",
 					Vector2(1, 1),
 				),
-#				AnimationSubject.new(
-#					block,
-#					"size",
-#					Vector2(board.block_size, board.block_size),
-#				),
-#				AnimationSubject.new(
-#					block.get_node("BlockLabel"),
-#					"size",
-#					Vector2(board.block_size, board.block_size),
-#				),
 			])
 	board.animate_blocks(subjects, slide_blocks_animation_tween_settings)
 	
@@ -79,9 +65,15 @@ func _on_block_progression_advanced(new_block_progression_data: Array[BlockData]
 	
 	
 func _on_block_progression_refreshed(new_block_progression: Array[BlockData]):
-#	block_progression_data = new_block_progression.duplicate()
-#	print(block_progression_data)
-	pass
+	for block in block_progression:
+		destroy_block(block)
+	build_initial_block_progression(new_block_progression.duplicate())
+	
+func build_initial_block_progression(block_progression_data: Array[BlockData]):
+	block_progression = []
+	for i in range(block_progression_data.size()):
+		var data = block_progression_data[i]
+		block_progression.append(spawn_block(i, data))
 	
 func get_new_block(index: int, data: BlockData) -> Block:
 	var block = BLOCK_SCENE.instantiate()

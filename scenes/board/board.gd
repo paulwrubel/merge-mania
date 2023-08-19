@@ -53,9 +53,6 @@ var width := pre_width * scalar
 var height := pre_height * scalar
 
 var color_progression: Array[Color] = [
-#	Color.html("#DDDDDD"),
-#	Color.html("#222222"),
-	# end test
 	Color.html("#BAFF29"),
 	Color.html("#D90DA3"),
 	Color.html("#34E4EA"),
@@ -68,7 +65,7 @@ var color_progression: Array[Color] = [
 	Color.html("#B118C8"),
 ]
 
-const steps_above_minimum_to_advance := 4
+const steps_above_minimum_to_advance := 9
 const steps_above_minimum_to_drop := 4
 
 var anim_lock := false
@@ -150,16 +147,6 @@ func get_block_background_color(block: BlockData) -> Color:
 func get_next_open_index_in_column(x: int) -> int:
 	return blocks[x].find(null)
 	
-#func add_block_to_column(index: int):
-#	var row_index = get_next_open_index_in_column(index)
-#	if row_index != -1:
-#		# spawn a block
-#		add_block_at(Vector2i(index, row_index), block_progression[0])
-##		spawn_initial_block_at(Vector2(index, row_index), block_progression[0])
-	
-#func set_block_at(loc: Vector2i, block: Block):
-#	blocks[loc.x][loc.y] = block
-	
 func destroy_block(block: Block):
 	remove_child(block)
 	block.queue_free()
@@ -185,20 +172,15 @@ func spawn_initial_block_at(pos: Vector2i, data: BlockData):
 		get_actual_location_from_grid(pos),
 	)], new_block_animation_tween_settings, on_animation_finished)
 	
-#	spawn_animated_block(Vector2i(pos.x, row_count - 1), pos, data, on_animation_finished)
-	
 func get_new_block(pos: Vector2i, data: BlockData) -> Block:
 	var block = BLOCK_SCENE.instantiate()
 	block.initialize({
 		"position": get_actual_location_from_grid(pos),
-#		"grid_position_initial": from_pos,
-#		"grid_position_final": to_pos,
 		"size": Vector2(block_size, block_size),
 		"scale": Vector2(1, 1),
 		"board": self,
 		"color": get_block_background_color(data),
 		"data": data,
-#		"animation_callback": on_animation_finished,
 	})
 	return block
 	
@@ -206,19 +188,6 @@ func spawn_block(pos: Vector2i, data: BlockData) -> Block:
 	var block = get_new_block(pos, data)
 	add_child(block)
 	return block
-	
-#func spawn_animated_block(from_pos: Vector2i, to_pos: Vector2i, data: BlockData, on_animation_finished: Callable) -> Block:
-#	var block = get_new_block(from_pos, data)
-#	var animated = ANIMATED_SCENE.instantiate()
-#	animated.parent_property_name = "position"
-#	animated.parent_property_value = get_actual_location_from_grid(to_pos)
-#	animated.duration_seconds = NEW_BLOCK_ANIMATION_DURATION_SECONDS
-#	animated.ease = Tween.EASE_OUT
-#	animated.trans = Tween.TRANS_EXPO
-#	animated.on_finished = on_animation_finished
-#	block.add_child(animated)
-#	add_child(block)
-#	return block
 	
 func select_next_block_in_progression():
 #	if (Math.random() < specialBlockOdds) {
@@ -255,7 +224,6 @@ func get_actual_location_from_grid(grid_loc: Vector2) -> Vector2:
 	)
 	
 func animate_blocks(subjects: Array[AnimationSubject], tween_settings: TweenSettings, on_finish = null):
-#	var curve = Curve.new()
 	var tween = create_tween() \
 		.set_ease(tween_settings.easing) \
 		.set_trans(tween_settings.transition)
