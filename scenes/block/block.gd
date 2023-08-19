@@ -1,7 +1,7 @@
 class_name Block
 extends Control
 
-var font = preload("res://assets/fonts/source_code_pro/static/SourceCodePro-Regular.ttf")
+#var font = preload("res://assets/fonts/source_code_pro/static/SourceCodePro-Regular.ttf")
 
 var board: Board
 
@@ -45,15 +45,20 @@ func _ready():
 #		.set_ease(Tween.EASE_OUT) \
 #		.set_trans(Tween.TRANS_EXPO)
 #	tween.tween_callback(animation_callback)
+<<<<<<< Updated upstream
 
 	var v = VBoxContainer.new()
 	v.update_minimum_size()
+=======
+	var font = $BlockLabel.label_settings.font
+>>>>>>> Stashed changes
 	
 	var text = board.get_formatted_block_text(data)
 	var text_size = font.get_string_size(text, HORIZONTAL_ALIGNMENT_CENTER, -1, DEFAULT_FONT_SIZE)
 	var font_size_scalar = (size.x / text_size.x) * 0.95
 	
 	var font_color = ColorUtils.get_highest_contrast_to(color, [Color.BLACK, Color.WHITE])
+	LabelSettings.new()
 	var label_settings = LabelSettings.new()
 	label_settings.font = font
 	label_settings.font_size = DEFAULT_FONT_SIZE if font_size_scalar >= 1.0 else DEFAULT_FONT_SIZE * font_size_scalar

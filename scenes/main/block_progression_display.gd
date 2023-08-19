@@ -9,7 +9,11 @@ var block_progression: Array[Block] = []
 var block_size := 100
 var padding := 5
 
-const SLIDE_BLOCKS_ANIMATION_DURATION_SECONDS = 0.3
+var slide_blocks_animation_tween_settings = TweenSettings.new(
+	0.3,
+	Tween.EASE_OUT,
+	Tween.TRANS_EXPO,
+)
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -62,7 +66,7 @@ func _on_block_progression_advanced(new_block_progression_data: Array[BlockData]
 #					Vector2(board.block_size, board.block_size),
 #				),
 			])
-	board.animate_blocks(subjects, SLIDE_BLOCKS_ANIMATION_DURATION_SECONDS)
+	board.animate_blocks(subjects, slide_blocks_animation_tween_settings)
 	
 	
 	# finally, get rid of the first block

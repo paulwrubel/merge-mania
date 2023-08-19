@@ -5,13 +5,31 @@ signal current_level_changed(new_current_level)
 signal block_progression_advanced(new_block_progression)
 signal block_progression_refreshed(new_block_progression)
 
+@export var curve: Curve2D
+
 const COLUMN_SCENE := preload("res://scenes/column/column.tscn")
 const BLOCK_SCENE := preload("res://scenes/block/block.tscn")
 
-const NEW_BLOCK_ANIMATION_DURATION_SECONDS = 0.2
-const MERGE_ANIMATION_DURATION_SECONDS = 0.3
-const COLLAPSE_ANIMATION_DURATION_SECONDS = 0.3
-const REMOVE_BLOCK_ANIMATION_DURATION_SECONDS = 0.5
+var new_block_animation_tween_settings = TweenSettings.new(
+	0.3,
+	Tween.EASE_OUT,
+	Tween.TRANS_EXPO
+)
+var merge_animation_tween_settings = TweenSettings.new(
+	0.3,
+	Tween.EASE_OUT,
+	Tween.TRANS_CUBIC
+)
+var collapse_animation_tween_settings = TweenSettings.new(
+	0.3,
+	Tween.EASE_OUT,
+	Tween.TRANS_EXPO
+)
+var remove_block_animation_tween_settings = TweenSettings.new(
+	0.5,
+	Tween.EASE_IN,
+	Tween.TRANS_CUBIC
+)
 
 var viewport_width: float = ProjectSettings.get_setting("display/window/size/viewport_width")
 var viewport_height: float = ProjectSettings.get_setting("display/window/size/viewport_height")
@@ -50,7 +68,11 @@ var color_progression: Array[Color] = [
 	Color.html("#B118C8"),
 ]
 
+<<<<<<< Updated upstream
 const steps_above_minimum_to_advance := 5
+=======
+const steps_above_minimum_to_advance := 4
+>>>>>>> Stashed changes
 const steps_above_minimum_to_drop := 4
 
 var anim_lock := false
@@ -165,7 +187,7 @@ func spawn_initial_block_at(pos: Vector2i, data: BlockData):
 		block,
 		"position",
 		get_actual_location_from_grid(pos),
-	)], NEW_BLOCK_ANIMATION_DURATION_SECONDS, on_animation_finished)
+	)], new_block_animation_tween_settings, on_animation_finished)
 	
 #	spawn_animated_block(Vector2i(pos.x, row_count - 1), pos, data, on_animation_finished)
 	
@@ -236,12 +258,18 @@ func get_actual_location_from_grid(grid_loc: Vector2) -> Vector2:
 		height - ((padding * (grid_loc.y + 1)) + (block_size * (grid_loc.y + 1)))
 	)
 	
-func animate_blocks(subjects: Array[AnimationSubject], duration_seconds: float, on_finish = null):
+func animate_blocks(subjects: Array[AnimationSubject], tween_settings: TweenSettings, on_finish = null):
+#	var curve = Curve.new()
 	var tween = create_tween() \
-		.set_ease(Tween.EASE_OUT) \
-		.set_trans(Tween.TRANS_EXPO)
+		.set_ease(tween_settings.easing) \
+		.set_trans(tween_settings.transition)
 	for subject in subjects:
-		tween.parallel().tween_property(subject.subject, subject.property_name, subject.property_value, duration_seconds)
+		tween.parallel().tween_property(
+			subject.subject, 
+			subject.property_name, 
+			subject.property_value, 
+			tween_settings.duration_seconds
+		)
 	if on_finish != null:
 		tween.tween_callback(on_finish)
 	
@@ -287,7 +315,7 @@ func try_check_collapse(active_column: int, on_animation_chain_finished: Callabl
 				function.call()
 			anim_lock = false
 			try_check_merge(active_column, false, on_animation_chain_finished)
-		animate_blocks(subjects, COLLAPSE_ANIMATION_DURATION_SECONDS, callback)
+		animate_blocks(subjects, collapse_animation_tween_settings, callback)
 	else:
 		try_check_merge(active_column, false, on_animation_chain_finished)
 
@@ -537,7 +565,7 @@ func try_check_merge(active_column: int, should_check_special: bool, on_animatio
 				function.call()
 			anim_lock = false
 			try_check_collapse(active_column, on_animation_chain_finished)
-		animate_blocks(subjects, MERGE_ANIMATION_DURATION_SECONDS, callback)
+		animate_blocks(subjects, merge_animation_tween_settings, callback)
 	elif !should_check_special:
 		try_check_merge(active_column, true, on_animation_chain_finished)
 	else:
@@ -770,7 +798,7 @@ func try_check_remove_invalid_blocks(on_animation_chain_finished: Callable):
 				function.call()
 			anim_lock = false
 			try_check_collapse(active_column, on_animation_chain_finished)
-		animate_blocks(subjects, REMOVE_BLOCK_ANIMATION_DURATION_SECONDS, on_finish)
+		animate_blocks(subjects, remove_block_animation_tween_settings, on_finish)
 	
 func try_check_new_level():
 	# update the minimum power

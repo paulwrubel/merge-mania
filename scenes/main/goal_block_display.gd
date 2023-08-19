@@ -14,6 +14,11 @@ func _ready():
 		Vector2(0, 0), 
 		PowerBlockData.new(board.current_level + board.steps_above_minimum_to_advance),
 	)
+<<<<<<< Updated upstream:scenes/main/goal_block_display.gd
+=======
+	
+	$GoalLabel.size.x = display_block.size.x * display_block.scale.x
+>>>>>>> Stashed changes:scenes/goal_block_display/goal_block_display.gd
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
