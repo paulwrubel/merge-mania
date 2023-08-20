@@ -19,21 +19,26 @@ func _ready():
 	$CollisionShape2D.shape.size = size
 	$CollisionShape2D.position = size / 2
 
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	queue_redraw()
-	
+
+
 func _input_event(_viewport: Viewport, event: InputEvent, _shape_index: int):
 	if event is InputEventMouseButton:
 		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 			board.try_spawn_initial_block_in(index)
-			
+
+
 func _on_mouse_entered():
 	is_hovering = true
 
+
 func _on_mouse_exited():
 	is_hovering = false
-			
+
+	
 func _draw():
 	var style_box = StyleBoxFlat.new()
 	style_box.set_corner_radius_all(ROUNDED_CORNER_SIZE)

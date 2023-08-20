@@ -6,6 +6,7 @@ static func get_contrast_ratio(color_1: Color, color_2: Color) -> float:
 	
 	return (maxf(lum_1, lum_2) + 0.05) / (minf(lum_1, lum_2) + 0.05)
 	
+
 static func get_highest_contrast_to(subject: Color, options: Array[Color]) -> Color:
 	var max_ratio = 0
 	var max_color = null
