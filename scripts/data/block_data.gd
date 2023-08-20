@@ -5,5 +5,6 @@ enum Type { POWER, WILDCARD }
 
 var type: Type
 
-func _init(_type: Type):
-	self.type = _type
+
+func _init(type_: Type):
+	self.type = type_

@@ -1,6 +1,6 @@
 extends Node2D
 
-var BLOCK_SCENE = preload("res://scenes/block/block.tscn")
+var Block = preload("res://scenes/block/block.tscn")
 
 @export var board: Board
 
@@ -15,6 +15,7 @@ var slide_blocks_animation_tween_settings = TweenSettings.new(
 	Tween.TRANS_EXPO,
 )
 
+
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	board.block_progression_advanced.connect(_on_block_progression_advanced)
@@ -25,13 +26,15 @@ func _ready():
 	var window_width = get_window().content_scale_size.x
 	position = Vector2(
 		window_width - (padding * 3 + board.block_size * 1.8),
-		0
+		0,
 	)
-	
+
+
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(delta):
+func _process(_delta):
 	pass
-	
+
+
 func _on_block_progression_advanced(new_block_progression_data: Array[BlockData]):
 	# add the newly generated block to the end of our array
 	# note: we haven't yet remove the placed block, so we are 
@@ -68,39 +71,47 @@ func _on_block_progression_refreshed(new_block_progression: Array[BlockData]):
 	for block in block_progression:
 		destroy_block(block)
 	build_initial_block_progression(new_block_progression.duplicate())
-	
+
+
 func build_initial_block_progression(block_progression_data: Array[BlockData]):
 	block_progression = []
 	for i in range(block_progression_data.size()):
 		var data = block_progression_data[i]
 		block_progression.append(spawn_block(i, data))
-	
+
+
 func get_new_block(index: int, data: BlockData) -> Block:
-	var block = BLOCK_SCENE.instantiate()
-	var scale = Vector2(1, 1)
+	var block = Block.instantiate()
+	var block_scale = Vector2(1, 1)
 	if index > 0:
-		scale *= 0.8
-	block.initialize({
-		"position": get_actual_position_from_index(index),
-		"size": Vector2(board.block_size, board.block_size),
-		"scale": scale,
-		"board": board,
-		"color": board.get_block_background_color(data),
-		"data": data,
-	})
+		block_scale *= 0.8
+	block.setup(
+		board,
+		get_actual_position_from_index(index),
+		Vector2(board.block_size, board.block_size),
+		block_scale,
+		data,
+	)
 	return block
-	
+
+
 func spawn_block(index: int, data: BlockData) -> Block:
 	var block = get_new_block(index, data)
 	add_child(block)
 	return block
-	
+
+
 func destroy_block(block: Block):
 	remove_child(block)
 	block.queue_free()
-	
+
+
 func get_actual_position_from_index(index: int) -> Vector2:
 	return Vector2(
-		(padding * (index + 1)) + (min(index, 1) * board.block_size) + (max(index - 1, 0) * board.block_size * 0.8),
+		(
+			(padding * (index + 1)) 
+			+ (min(index, 1) * board.block_size) 
+			+ (max(index - 1, 0) * board.block_size * 0.8)
+		),
 		padding
 	)
