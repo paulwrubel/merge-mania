@@ -52,6 +52,21 @@ func get_block_background_color(block: BlockData) -> Color:
 			return Color.WHITE
 
 
+func random_cherry_pick_from_array(array: Array, quantity: int) -> Array:
+	if quantity < 1:
+		return []
+	
+	var rand_index = randi_range(0, array.size() - 1)
+	var cherry_pick  = array[rand_index]
+
+	var subtracted_array = array.duplicate()
+	subtracted_array.remove_at(rand_index)
+
+	var final_array = [cherry_pick]
+	final_array.append_array(random_cherry_pick_from_array(subtracted_array, quantity - 1))
+	return final_array
+
+
 func _build_block_symbols() -> PackedStringArray:
 	var static_symbols = PackedStringArray([""]) + "kmgtpezyrq".split()
 	var dynamic_symbols_level_1 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split()

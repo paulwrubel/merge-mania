@@ -55,6 +55,8 @@ var height: float = pre_height * scalar
 const steps_above_minimum_to_advance: int = 9
 const steps_above_minimum_to_drop: int = 4
 
+const special_block_chance: float = 0.03
+
 var anim_lock: bool = false
 var current_level: int = 0
 var block_progression: Array[BlockData] = [
@@ -91,49 +93,11 @@ func _ready():
 		
 	# various other setup
 	position = Vector2(0, viewport_height - height)
-	# block_symbols = BlockUtils.build_block_symbols()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	pass
-
-	
-# func build_block_symbols() -> PackedStringArray:
-# 	var static_symbols = PackedStringArray([""]) + "kmgtpezyrq".split()
-# 	var dynamic_symbols_level_1 = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split()
-# 	var dynamic_symbols_level_2: PackedStringArray = []
-# 	for symbol_1 in dynamic_symbols_level_1:
-# 		for symbol_2 in dynamic_symbols_level_1:
-# 			dynamic_symbols_level_2.append(symbol_1 + symbol_2)
-			
-# 	return static_symbols + dynamic_symbols_level_1 + dynamic_symbols_level_2
-
-
-# func get_formatted_block_text(block: BlockData) -> String:
-# 	match block.type:
-# 		BlockData.Type.POWER:
-# 			var power = (block as PowerBlockData).power
-# 			var symbol_index: int = -1
-# 			for i in range(block_symbols.size()):
-# 				if power >= i * 10 and power - (i * 10) < 10:
-# 					symbol_index = i
-# 					break
-# 			return str(2 ** (power - 10 * symbol_index)) + block_symbols[symbol_index]
-# 		BlockData.Type.WILDCARD:
-# 			return str(2 ** (block as WildcardBlockData).magnitude)
-# 		_:
-# 			return "?"
-
-
-# func get_block_background_color(block: BlockData) -> Color:
-# 	match block.type:
-# 		BlockData.Type.POWER:
-# 			return color_progression[(block as PowerBlockData).power % color_progression.size()]
-# 		BlockData.Type.WILDCARD:
-# 			return color_progression[(block as WildcardBlockData).magnitude % color_progression.size()]
-# 		_:
-# 			return Color.WHITE
 
 
 func get_next_open_index_in_column(x: int) -> int:
@@ -171,7 +135,6 @@ func spawn_initial_block_at(pos: Vector2i, data: BlockData):
 func get_new_block(pos: Vector2i, data: BlockData) -> Block:
 	var block = Block.instantiate()
 	block.setup(
-		self,
 		get_actual_location_from_grid(pos),
 		Vector2(block_size, block_size),
 		Vector2(1, 1),
@@ -187,18 +150,22 @@ func spawn_block(pos: Vector2i, data: BlockData) -> Block:
 
 
 func select_next_block_in_progression() -> BlockData:
-#	if (Math.random() < specialBlockOdds) {
-#		const magSample = Math.random();
-#		const magnitude = magSample < 0.6 ? 0 : magSample < 0.9 ? 1 : 2;
-#		return {
-#			type: "wildcard",
-#			magnitude: magnitude,
-#			directions: randomCherryPickFromArray(
-#				["north", "south", "east", "west"],
-#				randRangeInt(1, 4),
-#			),
-#		};
-#	}
+	if randf() < special_block_chance:
+		var mag_sample: float = randf()
+		var magnitude: int
+		if mag_sample < 0.6:
+			magnitude = 0
+		elif mag_sample < 0.9:
+			magnitude = 1
+		else:
+			magnitude = 2
+		return WildcardBlockData.new(
+			magnitude,
+			BlockUtils.random_cherry_pick_from_array(
+				WildcardBlockData.CardinalDirection.values(),
+				randi_range(1, 4),
+			),
+		)
 	return PowerBlockData.new(current_level + randi_range(0, steps_above_minimum_to_drop))
 
 
@@ -589,7 +556,7 @@ func is_wildcard_block_position_valid(pos: Vector2i) -> bool:
 # esoteric that we will just pretend it will never happen
 # and remove the blocks anyways
 func get_wildcard_blocks_in_closed_loop() -> Array[Vector2i]:
-	var connected_special_groups: Array = []
+	var connected_special_groups: Array[Array] = []
 	for x in range(column_count):
 		var column := blocks[x]
 		for y in range(row_count):
@@ -745,7 +712,6 @@ func try_check_remove_invalid_blocks(on_animation_chain_finished: Callable):
 		# we'll just set it to whichever we saw last, because why not
 		active_column = pos.x
 		# this is the removal animation
-		var block_label = block.get_node("BlockLabel")
 		subjects.append_array([
 			AnimationSubject.new(
 				block,
@@ -754,11 +720,6 @@ func try_check_remove_invalid_blocks(on_animation_chain_finished: Callable):
 			),
 			AnimationSubject.new(
 				block,
-				"size",
-				Vector2(0, 0)
-			),
-			AnimationSubject.new(
-				block_label,
 				"scale",
 				Vector2(0, 0)
 			),
