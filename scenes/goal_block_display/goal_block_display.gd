@@ -34,7 +34,6 @@ func _on_current_level_changed(_new_level: int):
 func get_new_block(pos: Vector2, data: BlockData) -> Block:
 	var block = Block.instantiate()
 	block.setup(
-		board,
 		pos,
 		Vector2(board.block_size, board.block_size),
 		Vector2(1, 1) * 0.8,

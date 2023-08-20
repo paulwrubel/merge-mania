@@ -86,7 +86,6 @@ func get_new_block(index: int, data: BlockData) -> Block:
 	if index > 0:
 		block_scale *= 0.8
 	block.setup(
-		board,
 		get_actual_position_from_index(index),
 		Vector2(board.block_size, board.block_size),
 		block_scale,
