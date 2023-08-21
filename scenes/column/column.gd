@@ -27,7 +27,7 @@ func _process(_delta):
 
 func _input_event(_viewport: Viewport, event: InputEvent, _shape_index: int):
 	if event is InputEventMouseButton:
-		if event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+		if board.is_active and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
 			board.try_spawn_initial_block_in(index)
 
 
@@ -42,7 +42,7 @@ func _on_mouse_exited():
 func _draw():
 	var style_box = StyleBoxFlat.new()
 	style_box.set_corner_radius_all(ROUNDED_CORNER_SIZE)
-	var color = hover_color if is_hovering else background_color
+	var color = hover_color if is_hovering and board.is_active else background_color
 	style_box.bg_color = color
 	
 	draw_style_box(style_box, Rect2(LOCAL_POSITION, size))

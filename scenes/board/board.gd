@@ -4,6 +4,7 @@ extends Node2D
 signal current_level_changed(new_current_level)
 signal block_progression_advanced(new_block_progression)
 signal block_progression_refreshed(new_block_progression)
+signal board_filled()
 
 const Column := preload("res://scenes/column/column.tscn")
 const Block := preload("res://scenes/block/block.tscn")
@@ -58,6 +59,8 @@ const steps_above_minimum_to_drop: int = 4
 const special_block_chance: float = 0.03
 
 var anim_lock: bool = false
+var is_active: bool = true
+
 var current_level: int = 0
 var block_progression: Array[BlockData] = [
 	PowerBlockData.new(0), 
@@ -99,6 +102,24 @@ func _ready():
 func _process(_delta):
 	pass
 
+
+func reset_game():
+	for x in range(column_count):
+		for y in range(row_count):
+			var block = blocks[x][y]
+			if block != null:
+				destroy_block(block)
+				blocks[x][y] = null
+	
+	anim_lock = false
+	is_active = true
+
+	current_level = 0
+	current_level_changed.emit(0)
+	block_progression = [
+		PowerBlockData.new(0),
+		PowerBlockData.new(0),
+	]
 
 func get_next_open_index_in_column(x: int) -> int:
 	return blocks[x].find(null)
@@ -767,8 +788,23 @@ func try_check_new_level():
 		block_progression_refreshed.emit(block_progression)
 
 
+func try_check_board_filled():
+	if board_is_filled():
+		is_active = false
+		board_filled.emit()
+
+
+func board_is_filled() -> bool:
+	for column in blocks:
+		for block in column:
+			if block == null:
+				return false
+	return true
+
+
 func get_on_animation_chain_finished():
 	return func():
 		try_check_new_level()
 		try_check_remove_invalid_blocks(get_on_animation_chain_finished())
+		try_check_board_filled()
 # 		TODO: save
