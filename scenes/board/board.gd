@@ -32,6 +32,8 @@ var remove_block_animation_tween_settings = TweenSettings.new(
 	Tween.TRANS_CUBIC
 )
 
+const save_filename = "user://save.json"
+
 var viewport_width: float = ProjectSettings.get_setting("display/window/size/viewport_width")
 var viewport_height: float = ProjectSettings.get_setting("display/window/size/viewport_height")
 
@@ -73,14 +75,7 @@ var blocks: Array[Array] = []
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	BlockUtils = $"/root/BlockUtils"
-	
-	# initialize blocks grid
-	for x in range(column_count):
-		var col = []
-		for y in range(row_count):
-			col.append(null)
-		blocks.append(col)
-	
+		
 	# initialize columns
 	var column_x: float = padding
 	for i in range(column_count):
@@ -97,10 +92,103 @@ func _ready():
 	# various other setup
 	position = Vector2(0, viewport_height - height)
 
+	# load game or initialize empty blocks array
+	if not try_load_game():
+		# initialize blocks grid
+		for x in range(column_count):
+			var col = []
+			for y in range(row_count):
+				col.append(null)
+			blocks.append(col)
+
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
 	pass
+
+
+func save_game():
+	var save_file: FileAccess = FileAccess.open(save_filename, FileAccess.WRITE)
+
+	var block_progression_raw = []
+	for block_data in block_progression:
+		block_progression_raw.append(block_data.save())
+
+	var blocks_raw = []
+	for x in range(column_count):
+		var col_raw = []
+		for y in range(row_count):
+			var block = blocks[x][y]
+			if block == null:
+				col_raw.append(null)
+			else:
+				# var pos = Vector2i(
+				# 	block_raw["x"],
+				# 	block_raw["y"],
+				# )
+				# var block_data = BlockData.load_from_save(block_raw["data"])
+				# var block = spawn_block(pos, block_data)
+				col_raw.append({
+					"x": x,
+					"y": y,
+					"data": block.data.save(),
+				})
+		blocks_raw.append(col_raw)
+
+	var save_data = {
+		"current_level": current_level,
+		"block_progression": block_progression_raw,
+		"blocks": blocks_raw,
+	}
+
+	var save_string = JSON.stringify(save_data)
+	print("saving: ", save_string)
+	save_file.store_line(save_string)
+
+
+func try_load_game() -> bool:
+	if not FileAccess.file_exists(save_filename):
+		return false
+	
+	var save_file: FileAccess = FileAccess.open(save_filename, FileAccess.READ)
+	var save_data_raw: String = save_file.get_line()
+	print("loading: ", save_data_raw)
+
+	var save_data = JSON.parse_string(save_data_raw)
+	if save_data == null:
+		return false
+	
+	# current level
+	current_level = save_data["current_level"]
+	current_level_changed.emit(current_level)
+
+	# block progression
+	var block_progression_raw = save_data["block_progression"]
+	block_progression = []
+	for i in range(block_progression_raw.size()):
+		var block_data_raw = block_progression_raw[i]
+		var block_data = BlockData.load_from_save(block_data_raw)
+		block_progression.append(block_data)
+	
+	# blocks
+	blocks = []
+	var blocks_raw = save_data["blocks"]
+	for x in range(column_count):
+		var col = []
+		for y in range(row_count):
+			var block_raw = blocks_raw[x][y]
+			if block_raw == null:
+				col.append(null)
+			else:
+				var pos = Vector2i(
+					block_raw["x"],
+					block_raw["y"],
+				)
+				var block_data = BlockData.load_from_save(block_raw["data"])
+				var block = spawn_block(pos, block_data)
+				col.append(block)
+		blocks.append(col)
+	return true
 
 
 func reset_game():
@@ -807,4 +895,4 @@ func get_on_animation_chain_finished():
 		try_check_new_level()
 		try_check_remove_invalid_blocks(get_on_animation_chain_finished())
 		try_check_board_filled()
-# 		TODO: save
+		save_game()
