@@ -1,8 +1,6 @@
 class_name Block
 extends Node2D
 
-# var _board: Board
-
 var size: Vector2 = Vector2(100, 100)
 var color: Color
 var data: BlockData = PowerBlockData.new(1)

@@ -1,0 +1,92 @@
+[gd_scene load_steps=9 format=3 uid="uid://uqi4ir2i0ck1"]
+
+[ext_resource type="FontFile" uid="uid://cbepkkcdyuq6m" path="res://assets/fonts/source_code_pro/static/SourceCodePro-Bold.ttf" id="1_047fp"]
+[ext_resource type="Script" path="res://scenes/game_over_screen/game_over_screen.gd" id="1_sevv0"]
+[ext_resource type="FontFile" uid="uid://dvoyr2rcxfnfs" path="res://assets/fonts/source_code_pro/static/SourceCodePro-Medium.ttf" id="3_2nght"]
+[ext_resource type="StyleBox" uid="uid://bwigcd8i5v4o1" path="res://assets/restart_button_normal.tres" id="4_yvwj0"]
+[ext_resource type="StyleBox" uid="uid://ddlh5l7h2w2rk" path="res://assets/restart_button_pressed.tres" id="5_12tnr"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yjp1x"]
+bg_color = Color(1, 1, 1, 0.882353)
+border_width_left = 5
+border_width_top = 5
+border_width_right = 5
+border_width_bottom = 5
+border_color = Color(0, 0, 0, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+
+[sub_resource type="LabelSettings" id="LabelSettings_o7og5"]
+font = ExtResource("1_047fp")
+font_size = 60
+outline_size = 10
+outline_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_jb7n5"]
+font = ExtResource("3_2nght")
+font_size = 32
+font_color = Color(0, 0, 0, 1)
+
+[node name="GameOverScreen" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+script = ExtResource("1_sevv0")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_yjp1x")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+
+[node name="GameOverLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "GAME OVER"
+label_settings = SubResource("LabelSettings_o7og5")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HighScoreLabel" type="Label" parent="PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+text = "Highest level achieved: 0"
+label_settings = SubResource("LabelSettings_jb7n5")
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+alignment = 2
+
+[node name="RestartButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("3_2nght")
+theme_override_font_sizes/font_size = 48
+theme_override_styles/normal = ExtResource("4_yvwj0")
+theme_override_styles/hover = ExtResource("5_12tnr")
+text = "RESTART"
+icon_alignment = 1
