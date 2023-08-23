@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://g2su4qt6c7vn"]
+[gd_scene load_steps=11 format=3 uid="uid://g2su4qt6c7vn"]
 
 [ext_resource type="Script" path="res://scenes/main/main.gd" id="1_1kcte"]
 [ext_resource type="PackedScene" uid="uid://cwmiqqpjkkbe" path="res://scenes/board/board.tscn" id="1_w173f"]
@@ -6,7 +6,20 @@
 [ext_resource type="FontFile" uid="uid://bh6wkhea6qlt5" path="res://assets/fonts/source_code_pro/static/SourceCodePro-Regular.ttf" id="2_yhj8y"]
 [ext_resource type="PackedScene" uid="uid://cxnkigdij2gq2" path="res://scenes/goal_block_display/goal_block_display.tscn" id="3_75p23"]
 [ext_resource type="Script" path="res://scenes/main/block_progression_display.gd" id="3_bdpll"]
+[ext_resource type="Texture2D" uid="uid://ktl4qasusu4f" path="res://assets/icons/settings-material-icon.svg" id="3_sfqi5"]
 [ext_resource type="PackedScene" uid="uid://uqi4ir2i0ck1" path="res://scenes/game_over_screen/game_over_screen.tscn" id="7_fusxk"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x0min"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+bg_color = Color(0.133333, 0.133333, 0.133333, 1)
+corner_radius_top_left = 50
+corner_radius_top_right = 50
+corner_radius_bottom_right = 50
+corner_radius_bottom_left = 50
+shadow_color = Color(0, 0, 0, 1)
 
 [sub_resource type="LabelSettings" id="LabelSettings_w0o4o"]
 line_spacing = 0.0
@@ -19,32 +32,70 @@ script = ExtResource("1_1kcte")
 [node name="Board" parent="." instance=ExtResource("1_w173f")]
 position = Vector2(0, 480)
 
-[node name="BlockProgressionDisplay" type="Node2D" parent="." node_paths=PackedStringArray("board")]
-position = Vector2(500, 0)
-script = ExtResource("3_bdpll")
-board = NodePath("../Board")
-
-[node name="GoalBlockDisplay" parent="." node_paths=PackedStringArray("board") instance=ExtResource("3_75p23")]
-board = NodePath("../Board")
-
 [node name="GUI" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
 offset_right = 720.0
-offset_bottom = 300.0
+offset_bottom = 1280.0
+mouse_filter = 1
 
-[node name="LevelLabel" type="Label" parent="GUI" node_paths=PackedStringArray("board")]
-layout_mode = 1
+[node name="SettingsBar" type="MarginContainer" parent="GUI"]
+layout_mode = 0
+offset_right = 720.0
+offset_bottom = 120.0
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+
+[node name="PanelContainer" type="PanelContainer" parent="GUI/SettingsBar"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_x0min")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="GUI/SettingsBar/PanelContainer"]
+layout_mode = 2
+alignment = 2
+
+[node name="AspectRatioContainer" type="AspectRatioContainer" parent="GUI/SettingsBar/PanelContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+stretch_mode = 1
+alignment_horizontal = 2
+
+[node name="Button" type="Button" parent="GUI/SettingsBar/PanelContainer/HBoxContainer/AspectRatioContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+focus_mode = 0
+mouse_default_cursor_shape = 2
+text = "
+"
+icon = ExtResource("3_sfqi5")
+flat = true
+expand_icon = true
+
+[node name="BoardInfo" type="Node2D" parent="GUI"]
+position = Vector2(0, 120)
+
+[node name="LevelLabel" type="Label" parent="GUI/BoardInfo" node_paths=PackedStringArray("board")]
 anchors_preset = 5
 anchor_left = 0.5
 anchor_right = 0.5
-offset_left = -0.5
-offset_right = 0.5
+offset_left = 359.5
+offset_right = 360.5
 offset_bottom = 41.0
 grow_horizontal = 2
 label_settings = SubResource("LabelSettings_w0o4o")
 script = ExtResource("2_pmoxd")
-board = NodePath("../../Board")
+board = NodePath("../../../Board")
+
+[node name="BlockProgressionDisplay" type="Node2D" parent="GUI/BoardInfo" node_paths=PackedStringArray("board")]
+position = Vector2(500, 0)
+script = ExtResource("3_bdpll")
+board = NodePath("../../../Board")
+
+[node name="GoalBlockDisplay" parent="GUI/BoardInfo" node_paths=PackedStringArray("board") instance=ExtResource("3_75p23")]
+position = Vector2(5, 0)
+board = NodePath("../../../Board")
 
 [node name="GameOverScreen" parent="." node_paths=PackedStringArray("board") instance=ExtResource("7_fusxk")]
 visible = false
