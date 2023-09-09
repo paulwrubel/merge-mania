@@ -32,7 +32,9 @@ var remove_block_animation_tween_settings = TweenSettings.new(
 	Tween.TRANS_CUBIC
 )
 
-const save_filename = "user://save.json"
+const save_filename_format = "user://save{0}.json"
+
+var active_save_index = 0
 
 var viewport_width: float = ProjectSettings.get_setting("display/window/size/viewport_width")
 var viewport_height: float = ProjectSettings.get_setting("display/window/size/viewport_height")
@@ -55,7 +57,7 @@ var padding: float = pre_padding * scalar
 var width: float = pre_width * scalar
 var height: float = pre_height * scalar
 
-const steps_above_minimum_to_advance: int = 9
+var steps_above_minimum_to_advance: int = 9
 const steps_above_minimum_to_drop: int = 4
 
 const special_block_chance: float = 0.03
@@ -107,8 +109,18 @@ func _process(_delta):
 	pass
 
 
+func set_active_save_index(new_active_save_index: int):
+	active_save_index = new_active_save_index
+	reset_game()
+	try_load_game()
+
+
+func get_save_filename() -> String:
+	return save_filename_format.format([active_save_index])
+
+
 func save_game():
-	var save_file: FileAccess = FileAccess.open(save_filename, FileAccess.WRITE)
+	var save_file: FileAccess = FileAccess.open(get_save_filename(), FileAccess.WRITE)
 
 	var block_progression_raw = []
 	for block_data in block_progression:
@@ -136,6 +148,7 @@ func save_game():
 		blocks_raw.append(col_raw)
 
 	var save_data = {
+		"difficulty": steps_above_minimum_to_advance - 7,
 		"current_level": current_level,
 		"block_progression": block_progression_raw,
 		"blocks": blocks_raw,
@@ -147,6 +160,7 @@ func save_game():
 
 
 func try_load_game() -> bool:
+	var save_filename = get_save_filename()
 	if not FileAccess.file_exists(save_filename):
 		return false
 	
@@ -157,14 +171,18 @@ func try_load_game() -> bool:
 	var save_data = JSON.parse_string(save_data_raw)
 	if save_data == null:
 		return false
+
+	# difficulty
+	var difficulty = save_data["difficulty"]
+	steps_above_minimum_to_advance = 7 + difficulty
 	
 	# current level
 	current_level = save_data["current_level"]
 	current_level_changed.emit(current_level)
 
 	# block progression
-	var block_progression_raw = save_data["block_progression"]
 	block_progression = []
+	var block_progression_raw = save_data["block_progression"]
 	for i in range(block_progression_raw.size()):
 		var block_data_raw = block_progression_raw[i]
 		var block_data = BlockData.load_from_save(block_data_raw)
@@ -204,10 +222,12 @@ func reset_game():
 
 	current_level = 0
 	current_level_changed.emit(0)
+
 	block_progression = [
 		PowerBlockData.new(0),
 		PowerBlockData.new(0),
 	]
+	block_progression_refreshed.emit(block_progression)
 
 func get_next_open_index_in_column(x: int) -> int:
 	return blocks[x].find(null)

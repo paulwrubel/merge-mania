@@ -30,4 +30,5 @@ func _on_current_level_changed(new_current_level: int):
 
 func _on_restart_button_pressed():
 	board.reset_game()
+	board.save_game()
 	visible = false

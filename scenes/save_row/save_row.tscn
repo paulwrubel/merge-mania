@@ -1,0 +1,52 @@
+[gd_scene load_steps=6 format=3 uid="uid://cbqnsmvf3v5xg"]
+
+[ext_resource type="FontFile" uid="uid://bh6wkhea6qlt5" path="res://assets/fonts/source_code_pro/static/SourceCodePro-Regular.ttf" id="1_h6hl7"]
+[ext_resource type="StyleBox" uid="uid://dntg6koyuk25h" path="res://assets/style_boxes/save_row_panel.tres" id="1_nl4py"]
+[ext_resource type="Script" path="res://scenes/save_row/save_row.gd" id="1_tlvdi"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_cajox"]
+font = ExtResource("1_h6hl7")
+font_size = 28
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_3i1oo"]
+font = ExtResource("1_h6hl7")
+font_size = 28
+font_color = Color(0, 0, 0, 1)
+
+[node name="SaveRow" type="Button"]
+custom_minimum_size = Vector2(0, 75)
+offset_right = 510.0
+offset_bottom = 75.0
+theme_override_styles/normal = ExtResource("1_nl4py")
+script = ExtResource("1_tlvdi")
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+offset_right = 510.0
+offset_bottom = 75.0
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 5
+
+[node name="HBoxContainer" type="HBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 10
+alignment = 1
+
+[node name="SlotLabel" type="Label" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+text = "1"
+label_settings = SubResource("LabelSettings_cajox")
+vertical_alignment = 1
+
+[node name="SaveLabel" type="Label" parent="MarginContainer/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "NEW GAME"
+label_settings = SubResource("LabelSettings_3i1oo")
+horizontal_alignment = 2
+text_overrun_behavior = 3
