@@ -1,7 +1,12 @@
 class_name WildcardBlockData
 extends BlockData
 
-enum CardinalDirection { NORTH, SOUTH, EAST, WEST }
+enum CardinalDirection { 
+	NORTH = 0, 
+	SOUTH = 1, 
+	EAST = 2, 
+	WEST = 3,
+}
 
 var magnitude: int
 var directions: Array

@@ -26,9 +26,17 @@ func _process(_delta):
 
 
 func _input_event(_viewport: Viewport, event: InputEvent, _shape_index: int):
-	if event is InputEventMouseButton:
-		if board.is_active and event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
-			board.try_spawn_initial_block_in(index)
+	var should_spawn_block = false
+	if board.is_active:
+		if event is InputEventScreenTouch:
+			if not event.pressed and event.index == 0:
+				should_spawn_block = true
+		if event is InputEventMouseButton:
+			if not event.pressed and event.button_index == MOUSE_BUTTON_LEFT:
+				should_spawn_block = true
+	
+	if should_spawn_block:
+		board.try_spawn_initial_block_in(index)
 
 
 func _on_mouse_entered():

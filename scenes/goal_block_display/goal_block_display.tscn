@@ -6,7 +6,7 @@
 [sub_resource type="LabelSettings" id="LabelSettings_4ncvs"]
 line_spacing = 0.0
 font = ExtResource("2_id8op")
-font_size = 22
+font_size = 32
 
 [node name="GoalBlockDisplay" type="Node2D"]
 script = ExtResource("1_6tx1s")
@@ -14,7 +14,6 @@ script = ExtResource("1_6tx1s")
 [node name="GoalLabel" type="Label" parent="."]
 offset_right = 65.0
 offset_bottom = 28.0
-text = "Goal:
-"
+text = "goal"
 label_settings = SubResource("LabelSettings_4ncvs")
 horizontal_alignment = 1

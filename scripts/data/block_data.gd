@@ -1,13 +1,17 @@
 class_name BlockData
 extends RefCounted
 
-enum Type { POWER, WILDCARD }
+enum Type { 
+	POWER = 0, 
+	WILDCARD = 1,
+}
 
 var type: Type
 
 
 func _init(type_: Type):
 	self.type = type_
+
 
 static func load_from_save(data: Dictionary) -> BlockData:
 	match data["type"] as Type:
