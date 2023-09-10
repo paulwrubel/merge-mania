@@ -191,6 +191,7 @@ func try_load_game() -> bool:
 		var block_data_raw = block_progression_raw[i]
 		var block_data = BlockData.load_from_save(block_data_raw)
 		block_progression.append(block_data)
+	block_progression_refreshed.emit(block_progression)
 	
 	# blocks
 	blocks = []
