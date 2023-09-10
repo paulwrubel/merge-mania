@@ -5,9 +5,9 @@
 [ext_resource type="Script" path="res://scenes/main/level_label.gd" id="2_pmoxd"]
 [ext_resource type="FontFile" uid="uid://bh6wkhea6qlt5" path="res://assets/fonts/source_code_pro/static/SourceCodePro-Regular.ttf" id="2_yhj8y"]
 [ext_resource type="PackedScene" uid="uid://cxnkigdij2gq2" path="res://scenes/goal_block_display/goal_block_display.tscn" id="3_75p23"]
+[ext_resource type="Texture2D" uid="uid://c1iin84gvr4ii" path="res://assets/icons/material-apps-400w-0g-48os-white.png" id="3_807jr"]
 [ext_resource type="Script" path="res://scenes/main/block_progression_display.gd" id="3_bdpll"]
-[ext_resource type="Texture2D" uid="uid://u104vtb1frdu" path="res://assets/icons/material-apps-400w-0g-48os.svg" id="3_fmgj4"]
-[ext_resource type="Texture2D" uid="uid://bi251fb3vmufj" path="res://assets/icons/material-settings-400w-0g-48os-filled.svg" id="4_mmv1o"]
+[ext_resource type="Texture2D" uid="uid://baonwa6e56ooc" path="res://assets/icons/material-settings-400w-0g-48os-filled-white.png" id="4_xqbql"]
 [ext_resource type="PackedScene" uid="uid://uqi4ir2i0ck1" path="res://scenes/game_over_screen/game_over_screen.tscn" id="7_fusxk"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_x0min"]
@@ -64,13 +64,17 @@ size_flags_vertical = 3
 stretch_mode = 1
 alignment_horizontal = 0
 
-[node name="GameSelectionButton" type="Button" parent="GUI/SettingsBar/PanelContainer/HBoxContainer/AspectRatioContainer"]
+[node name="SaveSelectionButton" type="Button" parent="GUI/SettingsBar/PanelContainer/HBoxContainer/AspectRatioContainer"]
 layout_mode = 2
 focus_mode = 0
 mouse_default_cursor_shape = 2
-text = "
-"
-icon = ExtResource("3_fmgj4")
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_hover_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_focus_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_disabled_color = Color(1, 1, 1, 1)
+icon = ExtResource("3_807jr")
 flat = true
 icon_alignment = 1
 expand_icon = true
@@ -87,9 +91,11 @@ layout_mode = 2
 size_flags_vertical = 3
 focus_mode = 0
 mouse_default_cursor_shape = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/icon_normal_color = Color(1, 1, 1, 1)
 text = "
 "
-icon = ExtResource("4_mmv1o")
+icon = ExtResource("4_xqbql")
 flat = true
 expand_icon = true
 
@@ -128,5 +134,5 @@ grow_horizontal = 1
 grow_vertical = 1
 board = NodePath("../Board")
 
-[connection signal="pressed" from="GUI/SettingsBar/PanelContainer/HBoxContainer/AspectRatioContainer/GameSelectionButton" to="." method="_on_game_selection_button_pressed"]
+[connection signal="pressed" from="GUI/SettingsBar/PanelContainer/HBoxContainer/AspectRatioContainer/SaveSelectionButton" to="." method="_on_save_selection_button_pressed"]
 [connection signal="pressed" from="GUI/SettingsBar/PanelContainer/HBoxContainer/AspectRatioContainer2/SettingsButton" to="." method="_on_settings_button_pressed"]

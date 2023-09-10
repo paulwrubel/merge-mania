@@ -12,7 +12,7 @@ func _ready():
 	
 	display_block = spawn_block(
 		Vector2(0, $GoalLabel.size.y), 
-		PowerBlockData.new(board.current_level + board.steps_above_minimum_to_advance),
+		PowerBlockData.new(board.current_level + board.get_steps_above_minimum_to_advance()),
 	)
 	
 	$GoalLabel.size.x = display_block.size.x * display_block.scale.x
@@ -27,7 +27,7 @@ func _on_current_level_changed(_new_level: int):
 	destroy_block(display_block)
 	display_block = spawn_block(
 		Vector2(0, $GoalLabel.size.y), 
-		PowerBlockData.new(board.current_level + board.steps_above_minimum_to_advance),
+		PowerBlockData.new(board.current_level + board.get_steps_above_minimum_to_advance()),
 	)
 
 
