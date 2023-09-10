@@ -8,9 +8,9 @@ signal close_button_pressed()
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	pass
-	# for i in range(5):
-		# save_rows[i] = get_node(save_row_paths[d_val])
+	for i in range(save_rows.size()):
+		var save_row = save_rows[i]
+		save_row.pressed.connect(_on_save_row_pressed.bind(i))
 
 
 func _on_close_button_pressed():
@@ -18,4 +18,5 @@ func _on_close_button_pressed():
 
 
 func _on_save_row_pressed(row_index: int):
-	save_row_button_pressed.emit(row_index)
+	var save_row = save_rows[row_index]
+	save_row_button_pressed.emit(row_index, save_row.is_empty)

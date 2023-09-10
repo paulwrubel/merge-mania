@@ -57,7 +57,7 @@ var padding: float = pre_padding * scalar
 var width: float = pre_width * scalar
 var height: float = pre_height * scalar
 
-var steps_above_minimum_to_advance: int = 9
+var difficulty: Difficulty.Level = Difficulty.Level.NORMAL
 const steps_above_minimum_to_drop: int = 4
 
 const special_block_chance: float = 0.03
@@ -112,7 +112,12 @@ func _process(_delta):
 func set_active_save_index(new_active_save_index: int):
 	active_save_index = new_active_save_index
 	reset_game()
-	try_load_game()
+	if not try_load_game():
+		save_game()
+
+
+func set_difficulty(new_difficulty: Difficulty.Level):
+	difficulty = new_difficulty
 
 
 func get_save_filename() -> String:
@@ -148,7 +153,7 @@ func save_game():
 		blocks_raw.append(col_raw)
 
 	var save_data = {
-		"difficulty": steps_above_minimum_to_advance - 7,
+		"difficulty": difficulty,
 		"current_level": current_level,
 		"block_progression": block_progression_raw,
 		"blocks": blocks_raw,
@@ -173,8 +178,7 @@ func try_load_game() -> bool:
 		return false
 
 	# difficulty
-	var difficulty = save_data["difficulty"]
-	steps_above_minimum_to_advance = 7 + difficulty
+	difficulty = save_data["difficulty"]
 	
 	# current level
 	current_level = save_data["current_level"]
@@ -869,10 +873,26 @@ func try_check_remove_invalid_blocks(on_animation_chain_finished: Callable):
 		animate_blocks(subjects, remove_block_animation_tween_settings, on_finish)
 
 
+func get_steps_above_minimum_to_advance() -> int:
+	match difficulty:
+		Difficulty.Level.TRIVIAL:
+			return 7
+		Difficulty.Level.EASY:
+			return 8
+		Difficulty.Level.NORMAL:
+			return 9
+		Difficulty.Level.HARD:
+			return 10
+		Difficulty.Level.EXPERT:
+			return 11
+		_:
+			return 7	
+
+
 func try_check_new_level():
 	# update the minimum power
 	var new_current_level = max(
-		get_max_power_active() - (steps_above_minimum_to_advance - 1),
+		get_max_power_active() - (get_steps_above_minimum_to_advance() - 1),
 		0,
 	)
 	if new_current_level > current_level:
