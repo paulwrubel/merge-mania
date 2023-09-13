@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://1vsh6t3ibrk2"
-path="res://.godot/imported/material-apps-400w-0g-48os.png-3f4e74794ce8dea9331d475211c5d027.ctex"
+uid="uid://dvghmbtl8mlwt"
+path="res://.godot/imported/material-format-list-bulleted-400w-0g-48os.svg-3843da343d835dc3822d2353640a866b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/icons/material-apps-400w-0g-48os.png"
-dest_files=["res://.godot/imported/material-apps-400w-0g-48os.png-3f4e74794ce8dea9331d475211c5d027.ctex"]
+source_file="res://assets/icons/material-format-list-bulleted-400w-0g-48os.svg"
+dest_files=["res://.godot/imported/material-format-list-bulleted-400w-0g-48os.svg-3843da343d835dc3822d2353640a866b.ctex"]
 
 [params]
 
@@ -32,3 +32,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false

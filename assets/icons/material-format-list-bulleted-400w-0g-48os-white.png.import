@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://jatanym3a6yc"
-path="res://.godot/imported/material-settings-400w-0g-48os-white.png-4a768aafd15450cfdffd5cc82911c69d.ctex"
+uid="uid://dljbh6t27ko8t"
+path="res://.godot/imported/material-format-list-bulleted-400w-0g-48os-white.png-1072cd30c1d4366552f5a0a736b7dc69.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/icons/material-settings-400w-0g-48os-white.png"
-dest_files=["res://.godot/imported/material-settings-400w-0g-48os-white.png-4a768aafd15450cfdffd5cc82911c69d.ctex"]
+source_file="res://assets/icons/material-format-list-bulleted-400w-0g-48os-white.png"
+dest_files=["res://.godot/imported/material-format-list-bulleted-400w-0g-48os-white.png-1072cd30c1d4366552f5a0a736b7dc69.ctex"]
 
 [params]
 

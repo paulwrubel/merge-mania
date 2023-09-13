@@ -2,6 +2,7 @@ extends Node2D
 
 signal active_save_index_changed(new_active_save_index)
 
+const StatisticsScreenScene = preload("res://scenes/statistics_screen/statistics_screen.tscn")
 const SaveSelectionScreenScene = preload("res://scenes/save_selection_screen/save_selection_screen.tscn")
 const NewGameScreenScene = preload("res://scenes/new_game_screen/new_game_screen.tscn")
 
@@ -9,6 +10,7 @@ const meta_filename = "user://meta.json"
 const menu_transition_time_seconds = 0.2
 
 var SaveSelectionScreen = null
+var StatisticsScreen = null
 var NewGameScreen = null
 
 var active_save_index = 0
@@ -43,9 +45,6 @@ func try_load_metadata() -> bool:
 	return true
 
 
-func _on_settings_button_pressed():
-	pass # Replace with function body.
-
 
 func _on_save_selection_button_pressed():
 	SaveSelectionScreen = SaveSelectionScreenScene.instantiate()
@@ -56,9 +55,27 @@ func _on_save_selection_button_pressed():
 	$Board.is_active = false
 
 
+func _on_settings_button_pressed():
+	pass # Replace with function body.
+
+
+func _on_statistics_button_pressed():
+	StatisticsScreen = StatisticsScreenScene.instantiate()
+	StatisticsScreen.set_statistics($Board.stats)
+	StatisticsScreen.connect("close_button_pressed", _on_statistics_screen_close_button_pressed)
+	add_child(StatisticsScreen)
+
+	$Board.is_active = false
+
+
 func close_save_selection_menu():
 	SaveSelectionScreen.queue_free()
 	SaveSelectionScreen = null
+
+
+func close_statistics_screen():
+	StatisticsScreen.queue_free()
+	StatisticsScreen = null
 
 
 func close_new_game_menu():
@@ -68,6 +85,11 @@ func close_new_game_menu():
 
 func _on_save_selection_screen_close_button_pressed():
 	close_save_selection_menu()
+	$Board.is_active = true
+
+
+func _on_statistics_screen_close_button_pressed():
+	close_statistics_screen()
 	$Board.is_active = true
 
 

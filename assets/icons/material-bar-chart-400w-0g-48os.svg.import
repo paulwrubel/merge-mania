@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://u104vtb1frdu"
-path="res://.godot/imported/material-apps-400w-0g-48os.svg-0049773864430426f61e05dd4cad397f.ctex"
+uid="uid://rrvliw3ek5gj"
+path="res://.godot/imported/material-bar-chart-400w-0g-48os.svg-8dfece35040307fd52dd688edb01506e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/icons/material-apps-400w-0g-48os.svg"
-dest_files=["res://.godot/imported/material-apps-400w-0g-48os.svg-0049773864430426f61e05dd4cad397f.ctex"]
+source_file="res://assets/icons/material-bar-chart-400w-0g-48os.svg"
+dest_files=["res://.godot/imported/material-bar-chart-400w-0g-48os.svg-8dfece35040307fd52dd688edb01506e.ctex"]
 
 [params]
 

@@ -1,0 +1,102 @@
+[gd_scene load_steps=8 format=3 uid="uid://cpiinym8nnxp8"]
+
+[ext_resource type="Script" path="res://scenes/statistics_screen/statistics_screen.gd" id="1_slhae"]
+[ext_resource type="StyleBox" uid="uid://rp26wxw3184n" path="res://assets/style_boxes/menu_panel.tres" id="2_q86xg"]
+[ext_resource type="FontFile" uid="uid://bh6wkhea6qlt5" path="res://assets/fonts/source_code_pro/static/SourceCodePro-Regular.ttf" id="4_o8v2i"]
+[ext_resource type="FontFile" uid="uid://cbepkkcdyuq6m" path="res://assets/fonts/source_code_pro/static/SourceCodePro-Bold.ttf" id="4_uh6su"]
+[ext_resource type="FontFile" uid="uid://cbuoyn5c8mbhm" path="res://assets/fonts/source_code_pro/static/SourceCodePro-Italic.ttf" id="5_jiruy"]
+[ext_resource type="FontFile" uid="uid://mirskq8wplbw" path="res://assets/fonts/source_code_pro/static/SourceCodePro-BoldItalic.ttf" id="6_u3r0m"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tfjoh"]
+content_margin_left = 10.0
+content_margin_top = 10.0
+content_margin_right = 10.0
+content_margin_bottom = 10.0
+corner_radius_top_left = 5
+corner_radius_top_right = 5
+corner_radius_bottom_right = 5
+corner_radius_bottom_left = 5
+
+[node name="StatisticsScreen" type="MarginContainer"]
+offset_right = 720.0
+offset_bottom = 1280.0
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+script = ExtResource("1_slhae")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_styles/panel = ExtResource("2_q86xg")
+
+[node name="MarginContainer" type="MarginContainer" parent="PanelContainer"]
+layout_mode = 2
+size_flags_vertical = 4
+theme_override_constants/margin_left = 50
+theme_override_constants/margin_top = 50
+theme_override_constants/margin_right = 50
+theme_override_constants/margin_bottom = 50
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 50
+alignment = 1
+
+[node name="PanelContainer" type="PanelContainer" parent="PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_tfjoh")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/MarginContainer/VBoxContainer/PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="StatsLabelLeft" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 500)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 6.0
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_constants/line_separation = 20
+theme_override_fonts/normal_font = ExtResource("4_o8v2i")
+theme_override_fonts/bold_font = ExtResource("4_uh6su")
+theme_override_fonts/italics_font = ExtResource("5_jiruy")
+theme_override_fonts/bold_italics_font = ExtResource("6_u3r0m")
+theme_override_fonts/mono_font = ExtResource("4_o8v2i")
+theme_override_font_sizes/normal_font_size = 20
+theme_override_font_sizes/bold_font_size = 20
+theme_override_font_sizes/italics_font_size = 20
+theme_override_font_sizes/bold_italics_font_size = 20
+theme_override_font_sizes/mono_font_size = 20
+bbcode_enabled = true
+fit_content = true
+
+[node name="StatsLabelRight" type="RichTextLabel" parent="PanelContainer/MarginContainer/VBoxContainer/PanelContainer/HBoxContainer"]
+custom_minimum_size = Vector2(0, 500)
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/default_color = Color(0, 0, 0, 1)
+theme_override_constants/line_separation = 20
+theme_override_fonts/normal_font = ExtResource("4_o8v2i")
+theme_override_fonts/bold_font = ExtResource("4_uh6su")
+theme_override_fonts/italics_font = ExtResource("5_jiruy")
+theme_override_fonts/bold_italics_font = ExtResource("6_u3r0m")
+theme_override_fonts/mono_font = ExtResource("4_o8v2i")
+theme_override_font_sizes/normal_font_size = 20
+theme_override_font_sizes/bold_font_size = 20
+theme_override_font_sizes/italics_font_size = 20
+theme_override_font_sizes/bold_italics_font_size = 20
+theme_override_font_sizes/mono_font_size = 20
+bbcode_enabled = true
+fit_content = true
+
+[node name="CloseButton" type="Button" parent="PanelContainer/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("4_o8v2i")
+theme_override_font_sizes/font_size = 36
+text = "CLOSE"
+
+[connection signal="pressed" from="PanelContainer/MarginContainer/VBoxContainer/CloseButton" to="." method="_on_close_button_pressed"]
