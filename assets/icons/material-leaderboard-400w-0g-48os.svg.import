@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://6fvpia8u6iyv"
-path="res://.godot/imported/material-settings-400w-0g-48os.png-3f30db4438502e09ab3a13ddc94e5e8c.ctex"
+uid="uid://kdbhrlr6h4nl"
+path="res://.godot/imported/material-leaderboard-400w-0g-48os.svg-0268352bc7d78983d2a21d7d9ab62302.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/icons/material-settings-400w-0g-48os.png"
-dest_files=["res://.godot/imported/material-settings-400w-0g-48os.png-3f30db4438502e09ab3a13ddc94e5e8c.ctex"]
+source_file="res://assets/icons/material-leaderboard-400w-0g-48os.svg"
+dest_files=["res://.godot/imported/material-leaderboard-400w-0g-48os.svg-0268352bc7d78983d2a21d7d9ab62302.ctex"]
 
 [params]
 
@@ -32,3 +32,6 @@ process/hdr_as_srgb=false
 process/hdr_clamp_exposure=false
 process/size_limit=0
 detect_3d/compress_to=1
+svg/scale=1.0
+editor/scale_with_editor_scale=false
+editor/convert_colors_with_editor_theme=false

@@ -70,8 +70,8 @@ var block_progression: Array[BlockData] = [
 	PowerBlockData.new(0), 
 	PowerBlockData.new(0),
 ]
-
 var blocks: Array[Array] = []
+var stats: SaveStatistics = null
 
 
 # Called when the node enters the scene tree for the first time.
@@ -102,6 +102,7 @@ func _ready():
 			for y in range(row_count):
 				col.append(null)
 			blocks.append(col)
+		stats = SaveStatistics.new()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -152,11 +153,14 @@ func save_game():
 				})
 		blocks_raw.append(col_raw)
 
+	var stats_raw = stats.save()
+
 	var save_data = {
 		"difficulty": difficulty,
 		"current_level": current_level,
 		"block_progression": block_progression_raw,
 		"blocks": blocks_raw,
+		"statistics": stats_raw,
 	}
 
 	var save_string = JSON.stringify(save_data)
@@ -211,6 +215,10 @@ func try_load_game() -> bool:
 				var block = spawn_block(pos, block_data)
 				col.append(block)
 		blocks.append(col)
+
+	# statistics
+	stats = SaveStatistics.load_from_save(save_data["statistics"])
+
 	return true
 
 
@@ -233,6 +241,8 @@ func reset_game():
 		PowerBlockData.new(0),
 	]
 	block_progression_refreshed.emit(block_progression)
+
+	stats = SaveStatistics.new()
 
 func get_next_open_index_in_column(x: int) -> int:
 	return blocks[x].find(null)
@@ -257,7 +267,7 @@ func spawn_initial_block_at(pos: Vector2i, data: BlockData):
 		blocks[pos.x][pos.y] = block
 		advance_block_progression()
 		anim_lock = false
-		try_check_merge(pos.x, false, get_on_animation_chain_finished())
+		try_check_merge(pos.x, false, get_on_animation_chain_finished(), 0)
 		
 	animate_blocks([AnimationSubject.new(
 		block,
@@ -340,7 +350,7 @@ func animate_blocks(subjects: Array[AnimationSubject], tween_settings: TweenSett
 		tween.tween_callback(on_finish)
 
 
-func try_check_collapse(active_column: int, on_animation_chain_finished: Callable):
+func try_check_collapse(active_column: int, on_animation_chain_finished: Callable, chain_length: int):
 	var did_collapse: bool = false
 	var subjects: Array[AnimationSubject] = []
 	var on_finish_funcs: Array[Callable] = []
@@ -381,10 +391,10 @@ func try_check_collapse(active_column: int, on_animation_chain_finished: Callabl
 			for function in on_finish_funcs:
 				function.call()
 			anim_lock = false
-			try_check_merge(active_column, false, on_animation_chain_finished)
+			try_check_merge(active_column, false, on_animation_chain_finished, chain_length)
 		animate_blocks(subjects, collapse_animation_tween_settings, callback)
 	else:
-		try_check_merge(active_column, false, on_animation_chain_finished)
+		try_check_merge(active_column, false, on_animation_chain_finished, chain_length)
 
 
 func get_new_block_data_of_merge_group(group: Array) -> BlockData:
@@ -592,7 +602,7 @@ func find_merge_groups() -> Array[Array]: # really returns Array[Array[Vector2i]
 	return merge_groups
 
 
-func try_check_merge(active_column: int, should_check_special: bool, on_animation_chain_finished: Callable):
+func try_check_merge(active_column: int, should_check_special: bool, on_animation_chain_finished: Callable, chain_length: int):
 	var merge_groups = find_special_merge_groups() if should_check_special else find_merge_groups()
 	
 	# if we know we're gonna merge, might as well lock it now
@@ -634,18 +644,26 @@ func try_check_merge(active_column: int, should_check_special: bool, on_animatio
 			var new_block = spawn_block(group_center, new_block_data)
 			blocks[group_center.x][group_center.y] = new_block
 		)
+
+		# update stats
+		if group.size() > stats.max_merge:
+			stats.max_merge = group.size()
+
 	if merge_groups.size() > 0:
 		# add animation
 		var callback = func():
 			for function in on_finish_funcs:
 				function.call()
 			anim_lock = false
-			try_check_collapse(active_column, on_animation_chain_finished)
+			try_check_collapse(active_column, on_animation_chain_finished, chain_length + 1)
 		animate_blocks(subjects, merge_animation_tween_settings, callback)
 	elif not should_check_special:
-		try_check_merge(active_column, true, on_animation_chain_finished)
+		try_check_merge(active_column, true, on_animation_chain_finished, chain_length)
 	else:
-		on_animation_chain_finished.call()
+		on_animation_chain_finished.call(chain_length)
+
+	# update stats
+	stats.merge_count += merge_groups.size()
 
 
 func is_wildcard_block_position_valid(pos: Vector2i) -> bool:
@@ -819,7 +837,7 @@ func get_wildcard_blocks_in_closed_loop() -> Array[Vector2i]:
 	return blocks_in_closed_special_group
 
 
-func try_check_remove_invalid_blocks(on_animation_chain_finished: Callable):
+func try_check_remove_invalid_blocks(on_animation_chain_finished: Callable, chain_length: int):
 	# remove all on-screen blocks that are considered "invalid"
 	# these include:
 	# - power blocks below the minimum power
@@ -870,8 +888,11 @@ func try_check_remove_invalid_blocks(on_animation_chain_finished: Callable):
 			for function in on_finish_funcs:
 				function.call()
 			anim_lock = false
-			try_check_collapse(active_column, on_animation_chain_finished)
+			try_check_collapse(active_column, on_animation_chain_finished, chain_length)
 		animate_blocks(subjects, remove_block_animation_tween_settings, on_finish)
+
+	# update stats
+	stats.blocks_snapped += block_positions_to_remove.size()
 
 
 func get_steps_above_minimum_to_advance() -> int:
@@ -932,8 +953,10 @@ func board_is_filled() -> bool:
 
 
 func get_on_animation_chain_finished():
-	return func():
+	return func(chain_length: int):
 		try_check_new_level()
-		try_check_remove_invalid_blocks(get_on_animation_chain_finished())
+		try_check_remove_invalid_blocks(get_on_animation_chain_finished(), chain_length)
 		try_check_board_filled()
+		if chain_length > stats.max_chain:
+			stats.max_chain = chain_length
 		save_game()
