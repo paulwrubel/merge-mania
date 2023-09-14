@@ -9,41 +9,58 @@ const NewGameScreenScene = preload("res://scenes/new_game_screen/new_game_screen
 const meta_filename = "user://meta.json"
 const menu_transition_time_seconds = 0.2
 
+var metadata: Metadata = null
+
 var SaveSelectionScreen = null
 var StatisticsScreen = null
 var NewGameScreen = null
 
-var active_save_index = 0
-
 # Called when the node enters the scene tree for the first time.
 func _ready():
-	try_load_metadata()
+	if not try_load_metadata():
+		metadata = Metadata.new()
+		metadata.active_save_index = 0
+		metadata.statistics = GlobalStatistics.new()
+		save_metadata()
+	$Board.set_metadata(metadata)
+	$Board.board_state_settled.connect(_on_board_state_settled)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(_delta):
-	$Board.active_save_index = active_save_index
 	pass
+
+
+func save_metadata():
+	var metadata_file: FileAccess = FileAccess.open(meta_filename, FileAccess.WRITE)
+
+	var metadata_raw = metadata.save()
+
+	var metadata_save_string = JSON.stringify(metadata_raw)
+	print("saving metadata: ", metadata_save_string)
+	metadata_file.store_line(metadata_save_string)
 
 
 func try_load_metadata() -> bool:
 	if not FileAccess.file_exists(meta_filename):
 		return false
 	
-	var meta_file: FileAccess = FileAccess.open(meta_filename, FileAccess.READ)
-	var meta_data_raw: String = meta_file.get_line()
-	print("loading: ", meta_data_raw)
+	var metadata_file: FileAccess = FileAccess.open(meta_filename, FileAccess.READ)
+	var metadata_string: String = metadata_file.get_line()
+	print("loading metadata: ", metadata_string)
 
-	var meta_data = JSON.parse_string(meta_data_raw)
-	if meta_data == null:
+	var metadata_raw = JSON.parse_string(metadata_string)
+	if metadata_raw == null:
 		return false
-	
-	# current level
-	active_save_index = meta_data["active_save_index"]
-	$Board.set_active_save_index(active_save_index)
+
+	metadata = Metadata.load_from_save(metadata_raw)
+	$Board.set_metadata(metadata)
 
 	return true
 
+
+func _on_board_state_settled():
+	save_metadata()
 
 
 func _on_save_selection_button_pressed():
@@ -61,7 +78,7 @@ func _on_settings_button_pressed():
 
 func _on_statistics_button_pressed():
 	StatisticsScreen = StatisticsScreenScene.instantiate()
-	StatisticsScreen.set_statistics($Board.stats)
+	StatisticsScreen.set_statistics(metadata.statistics, $Board.stats)
 	StatisticsScreen.connect("close_button_pressed", _on_statistics_screen_close_button_pressed)
 	add_child(StatisticsScreen)
 
@@ -94,7 +111,7 @@ func _on_statistics_screen_close_button_pressed():
 
 
 func _on_save_selection_screen_save_row_button_pressed(save_index: int, save_slot_is_empty: bool):
-	active_save_index = save_index
+	metadata.active_save_index = save_index
 	if save_slot_is_empty:
 		# initialize the new game screen
 		NewGameScreen = NewGameScreenScene.instantiate()
@@ -115,7 +132,8 @@ func _on_save_selection_screen_save_row_button_pressed(save_index: int, save_slo
 		tween.tween_callback(on_finish)
 	else:
 		# select the save and close the menu
-		$Board.set_active_save_index(active_save_index)
+		$Board.set_metadata(metadata)
+		save_metadata()
 
 		close_save_selection_menu()
 		$Board.is_active = true
@@ -148,7 +166,8 @@ func _on_new_game_screen_back_button_pressed():
 func _on_new_game_screen_difficulty_button_pressed(difficulty: Difficulty.Level):
 	# select difficulty and close the menu
 	$Board.set_difficulty(difficulty)
-	$Board.set_active_save_index(active_save_index)
+	$Board.set_metadata(metadata)
+	save_metadata()
 
 	close_new_game_menu()
 	$Board.is_active = true

@@ -5,6 +5,7 @@ signal current_level_changed(new_current_level)
 signal block_progression_advanced(new_block_progression)
 signal block_progression_refreshed(new_block_progression)
 signal board_filled()
+signal board_state_settled()
 
 const Column := preload("res://scenes/column/column.tscn")
 const Block := preload("res://scenes/block/block.tscn")
@@ -33,8 +34,6 @@ var remove_block_animation_tween_settings = TweenSettings.new(
 )
 
 const save_filename_format = "user://save{0}.json"
-
-var active_save_index = 0
 
 var viewport_width: float = ProjectSettings.get_setting("display/window/size/viewport_width")
 var viewport_height: float = ProjectSettings.get_setting("display/window/size/viewport_height")
@@ -73,6 +72,8 @@ var block_progression: Array[BlockData] = [
 var blocks: Array[Array] = []
 var stats: SaveStatistics = null
 
+var metadata: Metadata = null
+
 
 # Called when the node enters the scene tree for the first time.
 func _ready():
@@ -94,15 +95,13 @@ func _ready():
 	# various other setup
 	position = Vector2(0, viewport_height - height)
 
-	# load game or initialize empty blocks array
-	if not try_load_game():
-		# initialize blocks grid
-		for x in range(column_count):
-			var col = []
-			for y in range(row_count):
-				col.append(null)
-			blocks.append(col)
-		stats = SaveStatistics.new()
+	# initialize blocks grid
+	for x in range(column_count):
+		var col = []
+		for y in range(row_count):
+			col.append(null)
+		blocks.append(col)
+	stats = SaveStatistics.new()
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -110,8 +109,8 @@ func _process(_delta):
 	pass
 
 
-func set_active_save_index(new_active_save_index: int):
-	active_save_index = new_active_save_index
+func set_metadata(new_metadata: Metadata):
+	metadata = new_metadata
 	reset_game()
 	if not try_load_game():
 		save_game()
@@ -122,7 +121,7 @@ func set_difficulty(new_difficulty: Difficulty.Level):
 
 
 func get_save_filename() -> String:
-	return save_filename_format.format([active_save_index])
+	return save_filename_format.format([metadata.active_save_index])
 
 
 func save_game():
@@ -664,6 +663,7 @@ func try_check_merge(active_column: int, should_check_special: bool, on_animatio
 
 	# update stats
 	stats.merge_count += merge_groups.size()
+	metadata.statistics.merge_count += merge_groups.size()
 
 
 func is_wildcard_block_position_valid(pos: Vector2i) -> bool:
@@ -936,6 +936,9 @@ func try_check_new_level():
 		block_progression.append_array(retained_blocks)
 		block_progression.append_array(new_blocks)
 		block_progression_refreshed.emit(block_progression)
+		
+	# update stats
+	metadata.statistics.max_level[difficulty] = current_level
 
 
 func try_check_board_filled():
@@ -960,3 +963,4 @@ func get_on_animation_chain_finished():
 		if chain_length > stats.max_chain:
 			stats.max_chain = chain_length
 		save_game()
+		board_state_settled.emit()
